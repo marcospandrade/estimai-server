@@ -3,11 +3,13 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { PrismaModule } from 'src/shared/prisma/prisma.module';
 import { HttpModule } from '@nestjs/axios';
+import { AuthUseCase } from './use-cases/auth.use-cases';
 
 @Module({
   imports: [PrismaModule, HttpModule],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, AuthUseCase],
+  exports: [AuthService, AuthUseCase],
 })
 export class AuthModule {}
 
