@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 
 import { PrismaService } from 'src/shared/prisma/prisma.service';
-import { RegisterDto } from './dto/register.dto';
+import { RegisterDto } from '../dto/register.dto';
 @Injectable()
-export class AuthService {
+export class AuthFactoryService {
   public constructor(
     private readonly prismaService: PrismaService,
     private readonly httpService: HttpService,

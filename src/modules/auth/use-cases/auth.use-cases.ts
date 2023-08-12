@@ -5,14 +5,19 @@ import { z } from 'zod';
 
 import { PrismaService } from 'src/shared/prisma/prisma.service';
 import { RegisterDto } from '../dto/register.dto';
-import { AuthService } from '../auth.service';
+import { AuthFactoryService } from './auth-factory.service';
 import axios from 'axios';
+import {
+  IExchangeCodeToAccessTokenAtlassian,
+  IRefreshTokenAtlassian,
+} from 'src/core/config/interfaces/config-atlassian.model';
+import { AtlassianService } from 'src/core/atlassian/atlassian.service';
+
 @Injectable()
 export class AuthUseCase {
   public constructor(
-    private readonly prismaService: PrismaService,
-    private readonly authService: AuthService,
-    private readonly httpService: HttpService,
+    private readonly authService: AuthFactoryService,
+    private readonly atlassianService: AtlassianService,
   ) {}
 
   public async register(registerDto: RegisterDto) {
@@ -23,18 +28,26 @@ export class AuthUseCase {
 
     const { code, state } = bodySchema.parse(registerDto);
 
-    const user = await this.authService.createUser({ code, state });
-
-    const response = await axios.get(
-      `https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=vES8VVF33u9KEXsb6rerNcl5oy8Ciarm&scope=read%3Aissue%3Ajira%20read%3Afield%3Ajira&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi%2Fauth%2Fcallback&state=${state}&response_type=code&prompt=consent`,
-      {
-        headers: {
-          Authorization: `Bearer ${user.code}`,
-        },
-      },
+    const exchangedCode = await this.atlassianService.exchangeCodeToAccessToken(
+      code,
     );
 
-    console.log(response.data);
-    return response.data;
+    // const user = await this.authService.createUser({ code, state });
+
+    // console.log(response.data);
+    return exchangedCode;
+  }
+
+  public async refreshAtlassianToken(refreshToken: string) {
+    // const payloadRefreshToken: IRefreshTokenAtlassian = {
+    //   grant_type: 'refresh_token',
+    //   client_id: this.CLIENT_ID,
+    //   client_secret: this.CLIENT_SECRET,
+    //   refresh_token: refreshToken,
+    // };
+    // const response = await axios.post(
+    //   `https://auth.atlassian.com/oauth/token`,
+    //   payloadRefreshToken,
+    // );
   }
 }
