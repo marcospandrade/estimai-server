@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { IAtlassianConfig } from '../atlassian/interfaces/config.model';
+import { IAtlassianConfig } from './interfaces/config-atlassian.model';
 
 @Injectable()
-export class SettingsService {
+export class ConfigService {
   private CLIENT_ID: string;
   private CLIENT_SECRET: string;
   private ATLASSIAN_CALLBACK_URL: string;
