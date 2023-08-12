@@ -20,3 +20,11 @@ export interface IAtlassianConfig {
   clientSecret: string;
   callbackUrl: string;
 }
+
+export interface IExchangeResponse {
+  access_token: string;
+  expires_in: number;
+  refresh_token: string;
+  scope: string;
+  token_type: string;
+}
