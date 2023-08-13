@@ -57,11 +57,18 @@ export class AtlassianService {
     accessToken: string,
   ): Promise<UserAtlassianInfo> {
     const { data } = await firstValueFrom(
-      this.httpService.get<UserAtlassianInfo>('https://api.atlassian.com/me', {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }),
+      this.httpService
+        .get<UserAtlassianInfo>('https://api.atlassian.com/me', {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .pipe(
+          catchError((error: AxiosError) => {
+            this.logger.error(error.response?.data);
+            throw new InternalServerErrorException(error.response?.data);
+          }),
+        ),
     );
 
     return data;

@@ -1,16 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { PrismaService } from 'src/shared/prisma/prisma.service';
-import { RegisterDto } from '../dto/register.dto';
+import { ICreateUserDTO } from '../dto/register.dto';
+import { IAtlassianAuth } from 'src/core/config/interfaces/config-atlassian.model';
 @Injectable()
 export class AuthFactoryService {
-  public constructor(
-    private readonly prismaService: PrismaService,
-    private readonly httpService: HttpService,
-  ) {}
+  public constructor(private readonly prismaService: PrismaService) {}
 
-  public async createUser(payload: RegisterDto) {
+  public async createUser(payload: ICreateUserDTO) {
     let user;
 
     user = await this.prismaService.user.findUnique({
@@ -22,12 +19,31 @@ export class AuthFactoryService {
     if (!user) {
       user = await this.prismaService.user.create({
         data: {
-          code: payload.code,
-          state: payload.state,
+          ...payload,
         },
       });
     }
 
     return user;
+  }
+
+  public async getAtlassianAccessToken(
+    userId: string,
+  ): Promise<IAtlassianAuth> {
+    const authData = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        accessToken: true,
+        refreshToken: true,
+      },
+    });
+
+    if (!authData) {
+      throw new NotFoundException('Client not registered');
+    }
+
+    return authData;
   }
 }

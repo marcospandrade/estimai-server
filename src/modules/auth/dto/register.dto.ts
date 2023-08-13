@@ -8,7 +8,7 @@ export interface ICreateUserDTO {
   accessToken: string;
   refreshToken: string;
   name: string;
-  email?: string;
+  email: string;
   picture?: string;
   jobTitle?: string;
 }

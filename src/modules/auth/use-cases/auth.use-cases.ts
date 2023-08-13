@@ -1,26 +1,20 @@
-import { Injectable } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { z } from 'zod';
 
-import { PrismaService } from 'src/shared/prisma/prisma.service';
-import { RegisterDto } from '../dto/register.dto';
+import { IAuth, ICreateUserDTO } from '../dto/register.dto';
 import { AuthFactoryService } from './auth-factory.service';
-import axios from 'axios';
-import {
-  IExchangeCodeToAccessTokenAtlassian,
-  IRefreshTokenAtlassian,
-} from 'src/core/config/interfaces/config-atlassian.model';
 import { AtlassianService } from 'src/core/atlassian/atlassian.service';
+import { IAtlassianAuth } from 'src/core/config/interfaces/config-atlassian.model';
 
 @Injectable()
 export class AuthUseCase {
   public constructor(
-    private readonly authService: AuthFactoryService,
+    private readonly authFactoryService: AuthFactoryService,
     private readonly atlassianService: AtlassianService,
   ) {}
 
-  public async register(registerDto: RegisterDto) {
+  public async register(registerDto: IAuth) {
     const bodySchema = z.object({
       code: z.string(),
       state: z.string().uuid(),
@@ -32,10 +26,24 @@ export class AuthUseCase {
       code,
     );
 
-    // const user = await this.authService.createUser({ code, state });
+    const userInfo = await this.atlassianService.getUserInformation(
+      exchangedCode.access_token,
+    );
+
+    const createUser: ICreateUserDTO = {
+      accessToken: exchangedCode.access_token,
+      refreshToken: exchangedCode.refresh_token,
+      state,
+      name: userInfo.name,
+      email: userInfo.email,
+      picture: userInfo.picture,
+      jobTitle: userInfo.extended_profile.job_title,
+    };
+
+    const userCreated = await this.authFactoryService.createUser(createUser);
 
     // console.log(response.data);
-    return exchangedCode;
+    return userCreated;
   }
 
   public async refreshAtlassianToken(refreshToken: string) {
@@ -49,5 +57,13 @@ export class AuthUseCase {
     //   `https://auth.atlassian.com/oauth/token`,
     //   payloadRefreshToken,
     // );
+  }
+
+  public async getUserAccessToken(userId: string): Promise<IAtlassianAuth> {
+    try {
+      return this.authFactoryService.getAtlassianAccessToken(userId);
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 }
