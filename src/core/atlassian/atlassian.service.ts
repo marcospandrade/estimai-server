@@ -14,6 +14,7 @@ import {
   IExchangeResponse,
 } from '../config/interfaces/config-atlassian.model';
 import { ConfigService } from '../config/config.service';
+import { UserAtlassianInfo } from './interfaces/user-info.model';
 
 @Injectable()
 export class AtlassianService {
@@ -47,6 +48,20 @@ export class AtlassianService {
             throw new InternalServerErrorException(error.response?.data);
           }),
         ),
+    );
+
+    return data;
+  }
+
+  public async getUserInformation(
+    accessToken: string,
+  ): Promise<UserAtlassianInfo> {
+    const { data } = await firstValueFrom(
+      this.httpService.get<UserAtlassianInfo>('https://api.atlassian.com/me', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }),
     );
 
     return data;

@@ -21,6 +21,11 @@ export interface IAtlassianConfig {
   callbackUrl: string;
 }
 
+export interface IAtlassianAuth {
+  accessToken: string;
+  refreshToken: string;
+}
+
 export interface IExchangeResponse {
   access_token: string;
   expires_in: number;
