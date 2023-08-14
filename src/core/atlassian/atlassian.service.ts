@@ -2,6 +2,7 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 
@@ -12,9 +13,11 @@ import {
   IAtlassianConfig,
   IExchangeCodeToAccessTokenAtlassian,
   IExchangeResponse,
+  IRefreshTokenAtlassian,
 } from '../config/interfaces/config-atlassian.model';
 import { ConfigService } from '../config/config.service';
 import { UserAtlassianInfo } from './interfaces/user-info.model';
+import { PrismaService } from 'src/shared/prisma/prisma.service';
 
 @Injectable()
 export class AtlassianService {
@@ -24,8 +27,32 @@ export class AtlassianService {
   public constructor(
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
+    private readonly prismaService: PrismaService,
   ) {
     this.configAtlassian = this.configService.getAtlassian();
+  }
+
+  public async getUserToken(userId: string) {
+    const userAuthInfo = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        accessToken: true,
+        expiresAt: true,
+        refreshToken: true,
+      },
+    });
+
+    if (!userAuthInfo) {
+      throw new NotFoundException('User not registered');
+    }
+
+    if (Date.now() < userAuthInfo.expiresAt) {
+      return userAuthInfo.accessToken;
+    }
+
+    return this.refreshToken(userId, userAuthInfo.refreshToken);
   }
 
   public async exchangeCodeToAccessToken(
@@ -41,7 +68,10 @@ export class AtlassianService {
 
     const { data } = await firstValueFrom(
       this.httpService
-        .post('https://auth.atlassian.com/oauth/token', payloadAuthAtlassian)
+        .post<IExchangeResponse>(
+          'https://auth.atlassian.com/oauth/token',
+          payloadAuthAtlassian,
+        )
         .pipe(
           catchError((error: AxiosError) => {
             this.logger.error(error.response?.data);
@@ -72,5 +102,43 @@ export class AtlassianService {
     );
 
     return data;
+  }
+
+  private async refreshToken(
+    userId: string,
+    refreshToken: string,
+  ): Promise<string> {
+    const payloadRefreshToken: IRefreshTokenAtlassian = {
+      grant_type: 'refresh_token',
+      client_id: this.configAtlassian.clientId,
+      client_secret: this.configAtlassian.clientSecret,
+      refresh_token: refreshToken,
+    };
+
+    const { data } = await firstValueFrom(
+      this.httpService
+        .post<IExchangeResponse>(
+          `https://auth.atlassian.com/oauth/token`,
+          payloadRefreshToken,
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            this.logger.error(error.response?.data);
+            throw new InternalServerErrorException(error.response?.data);
+          }),
+        ),
+    );
+
+    this.prismaService.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        refreshToken: data.refresh_token,
+        accessToken: data.access_token,
+      },
+    });
+
+    return data.access_token;
   }
 }
