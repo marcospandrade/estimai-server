@@ -1,8 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from 'src/shared/prisma/prisma.service';
 import { ICreateUserDTO } from '../dto/login.dto';
-import { IAtlassianAuth } from 'src/core/config/interfaces/config-atlassian.model';
 import { User } from '@prisma/client';
 @Injectable()
 export class AuthFactoryService {
@@ -18,7 +17,7 @@ export class AuthFactoryService {
     return user;
   }
 
-  public async createUser(payload: ICreateUserDTO) {
+  public async createUser(payload: ICreateUserDTO): Promise<User> {
     let user;
 
     user = await this.prismaService.user.findUnique({
@@ -36,25 +35,5 @@ export class AuthFactoryService {
     }
 
     return user;
-  }
-
-  public async getAtlassianAccessToken(
-    userId: string,
-  ): Promise<IAtlassianAuth> {
-    const authData = await this.prismaService.user.findUnique({
-      where: {
-        id: userId,
-      },
-      select: {
-        accessToken: true,
-        refreshToken: true,
-      },
-    });
-
-    if (!authData) {
-      throw new NotFoundException('Client not registered');
-    }
-
-    return authData;
   }
 }

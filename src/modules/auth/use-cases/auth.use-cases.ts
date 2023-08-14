@@ -1,11 +1,10 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { z } from 'zod';
 
 import { IAuth, ICreateUserDTO } from '../dto/login.dto';
 import { AuthFactoryService } from './auth-factory.service';
 import { AtlassianService } from 'src/core/atlassian/atlassian.service';
-import { IAtlassianAuth } from 'src/core/config/interfaces/config-atlassian.model';
 import { AtlassianHelper } from 'src/core/atlassian/helpers/atlassian.helper';
 
 @Injectable()
@@ -51,28 +50,5 @@ export class AuthUseCase {
     const userCreated = await this.authFactoryService.createUser(createUser);
 
     return userCreated;
-  }
-
-  private registerUser() {}
-
-  public async refreshAtlassianToken(refreshToken: string) {
-    // const payloadRefreshToken: IRefreshTokenAtlassian = {
-    //   grant_type: 'refresh_token',
-    //   client_id: this.CLIENT_ID,
-    //   client_secret: this.CLIENT_SECRET,
-    //   refresh_token: refreshToken,
-    // };
-    // const response = await axios.post(
-    //   `https://auth.atlassian.com/oauth/token`,
-    //   payloadRefreshToken,
-    // );
-  }
-
-  public async getUserAccessToken(userId: string): Promise<IAtlassianAuth> {
-    try {
-      return this.authFactoryService.getAtlassianAccessToken(userId);
-    } catch (error) {
-      throw new InternalServerErrorException(error);
-    }
   }
 }
