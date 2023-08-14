@@ -2,10 +2,11 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { z } from 'zod';
 
-import { IAuth, ICreateUserDTO } from '../dto/register.dto';
+import { IAuth, ICreateUserDTO } from '../dto/login.dto';
 import { AuthFactoryService } from './auth-factory.service';
 import { AtlassianService } from 'src/core/atlassian/atlassian.service';
 import { IAtlassianAuth } from 'src/core/config/interfaces/config-atlassian.model';
+import { AtlassianHelper } from 'src/core/atlassian/helpers/atlassian.helper';
 
 @Injectable()
 export class AuthUseCase {
@@ -14,13 +15,19 @@ export class AuthUseCase {
     private readonly atlassianService: AtlassianService,
   ) {}
 
-  public async register(registerDto: IAuth) {
+  public async login(registerDto: IAuth) {
     const bodySchema = z.object({
       code: z.string(),
       state: z.string().uuid(),
     });
 
     const { code, state } = bodySchema.parse(registerDto);
+
+    const userExists = await this.authFactoryService.checkUserExists(state);
+
+    if (userExists) {
+      return userExists;
+    }
 
     const exchangedCode = await this.atlassianService.exchangeCodeToAccessToken(
       code,
@@ -33,6 +40,7 @@ export class AuthUseCase {
     const createUser: ICreateUserDTO = {
       accessToken: exchangedCode.access_token,
       refreshToken: exchangedCode.refresh_token,
+      expiresAt: AtlassianHelper.calculateExpiresAt(exchangedCode.expires_in),
       state,
       name: userInfo.name,
       email: userInfo.email,
@@ -42,9 +50,10 @@ export class AuthUseCase {
 
     const userCreated = await this.authFactoryService.createUser(createUser);
 
-    // console.log(response.data);
     return userCreated;
   }
+
+  private registerUser() {}
 
   public async refreshAtlassianToken(refreshToken: string) {
     // const payloadRefreshToken: IRefreshTokenAtlassian = {

@@ -1,11 +1,22 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { PrismaService } from 'src/shared/prisma/prisma.service';
-import { ICreateUserDTO } from '../dto/register.dto';
+import { ICreateUserDTO } from '../dto/login.dto';
 import { IAtlassianAuth } from 'src/core/config/interfaces/config-atlassian.model';
+import { User } from '@prisma/client';
 @Injectable()
 export class AuthFactoryService {
   public constructor(private readonly prismaService: PrismaService) {}
+
+  public async checkUserExists(state: string): Promise<User | null> {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        state,
+      },
+    });
+
+    return user;
+  }
 
   public async createUser(payload: ICreateUserDTO) {
     let user;
