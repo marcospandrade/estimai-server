@@ -13,6 +13,7 @@ datasource db {
 model User {
   id           String   @id @default(uuid())
   accessToken  String   @unique @map("access_token")
+  expiresAt    Int      @map("expires_at")
   refreshToken String   @unique @map("refresh_token")
   state        String   @unique
   name         String
