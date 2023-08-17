@@ -11,15 +11,16 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  accessToken  String   @unique @map("access_token")
-  expiresAt    Int      @map("expires_at")
-  refreshToken String   @unique @map("refresh_token")
-  state        String   @unique
-  name         String
-  email        String
-  picture      String?
-  jobTitle     String?  @map("job_title")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id                   String   @id @default(uuid())
+  accessTokenEstimai   String   @unique @map("access_token_estimai")
+  accessTokenAtlassian String   @unique @map("access_token_atlassian")
+  expiresAt            BigInt   @map("expires_at")
+  refreshToken         String   @unique @map("refresh_token")
+  state                String   @unique
+  name                 String
+  email                String
+  picture              String?
+  jobTitle             String?  @map("job_title")
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 }
