@@ -6,12 +6,14 @@ import { IAuth, ICreateUserDTO } from '../dto/login.dto';
 import { AuthFactoryService } from './auth-factory.service';
 import { AtlassianService } from 'src/core/atlassian/atlassian.service';
 import { AtlassianHelper } from 'src/core/atlassian/helpers/atlassian.helper';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthUseCase {
   public constructor(
     private readonly authFactoryService: AuthFactoryService,
     private readonly atlassianService: AtlassianService,
+    private readonly jwtService: JwtService,
   ) {}
 
   public async login(registerDto: IAuth) {
@@ -28,16 +30,15 @@ export class AuthUseCase {
       return userExists;
     }
 
-    const exchangedCode = await this.atlassianService.exchangeCodeToAccessToken(
-      code,
-    );
+    const exchangedCode = await this.atlassianService.exchangeCodeToAccessToken(code);
 
-    const userInfo = await this.atlassianService.getUserInformation(
-      exchangedCode.access_token,
-    );
+    const userInfo = await this.atlassianService.getUserInformation(exchangedCode.access_token);
+
+    const accessTokenEstimai = await this.authFactoryService.generateJwtToken(state, userInfo);
 
     const createUser: ICreateUserDTO = {
-      accessToken: exchangedCode.access_token,
+      accessTokenEstimai,
+      accessTokenAtlassian: exchangedCode.access_token,
       refreshToken: exchangedCode.refresh_token,
       expiresAt: AtlassianHelper.calculateExpiresAt(exchangedCode.expires_in),
       state,
@@ -47,8 +48,8 @@ export class AuthUseCase {
       jobTitle: userInfo.extended_profile.job_title,
     };
 
-    const userCreated = await this.authFactoryService.createUser(createUser);
+    await this.authFactoryService.createUser(createUser);
 
-    return userCreated;
+    return accessTokenEstimai;
   }
 }

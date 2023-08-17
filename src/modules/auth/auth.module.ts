@@ -6,9 +6,19 @@ import { AuthController } from './auth.controller';
 import { PrismaModule } from 'src/shared/prisma/prisma.module';
 import { AuthUseCase } from './use-cases/auth.use-cases';
 import { AtlassianModule } from 'src/core/atlassian/atlassian.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [PrismaModule, HttpModule, AtlassianModule],
+  imports: [
+    PrismaModule,
+    HttpModule,
+    AtlassianModule,
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_KEY,
+      signOptions: { expiresIn: process.env.JWT_EXPIRES },
+    }),
+  ],
   controllers: [AuthController],
   providers: [AuthFactoryService, AuthUseCase],
   exports: [AuthUseCase],

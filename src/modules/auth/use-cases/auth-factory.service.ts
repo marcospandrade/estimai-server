@@ -3,9 +3,11 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/shared/prisma/prisma.service';
 import { ICreateUserDTO } from '../dto/login.dto';
 import { User } from '@prisma/client';
+import { JwtService } from '@nestjs/jwt';
+import { UserAtlassianInfo } from 'src/core/atlassian/interfaces/user-info.model';
 @Injectable()
 export class AuthFactoryService {
-  public constructor(private readonly prismaService: PrismaService) {}
+  public constructor(private readonly prismaService: PrismaService, private readonly jwtService: JwtService) {}
 
   public async checkUserExists(state: string): Promise<User | null> {
     const user = await this.prismaService.user.findUnique({
@@ -35,5 +37,18 @@ export class AuthFactoryService {
     }
 
     return user;
+  }
+
+  public async generateJwtToken(state: string, userInfo: UserAtlassianInfo): Promise<string> {
+    // NOTE: Check later if it's necessary to add more information to the token, like (atlassian access token and refresh_token)
+    const payload = {
+      state: state,
+      name: userInfo.name,
+      email: userInfo.email,
+      picture: userInfo.picture,
+      jobTitle: userInfo.extended_profile.job_title,
+    };
+
+    return this.jwtService.signAsync(payload);
   }
 }

@@ -5,7 +5,8 @@ export interface IAuth {
 
 export interface ICreateUserDTO {
   state: string;
-  accessToken: string;
+  accessTokenEstimai: string;
+  accessTokenAtlassian: string;
   expiresAt: number;
   refreshToken: string;
   name: string;
