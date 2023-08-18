@@ -9,10 +9,10 @@ import { UserAtlassianInfo } from 'src/core/atlassian/interfaces/user-info.model
 export class AuthFactoryService {
   public constructor(private readonly prismaService: PrismaService, private readonly jwtService: JwtService) {}
 
-  public async checkUserExists(state: string): Promise<User | null> {
+  public async checkUserExists(email: string): Promise<User | null> {
     const user = await this.prismaService.user.findUnique({
       where: {
-        state,
+        email,
       },
     });
 

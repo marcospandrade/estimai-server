@@ -43,7 +43,7 @@ export class AtlassianService {
       throw new NotFoundException('User not registered');
     }
 
-    if (Date.now() < userAuthInfo.expiresAt) {
+    if (Date.now() < Number(userAuthInfo.expiresAt)) {
       return userAuthInfo.accessTokenAtlassian;
     }
 

@@ -7,7 +7,7 @@ export interface ICreateUserDTO {
   state: string;
   accessTokenEstimai: string;
   accessTokenAtlassian: string;
-  expiresAt: number;
+  expiresAt: string;
   refreshToken: string;
   name: string;
   email: string;

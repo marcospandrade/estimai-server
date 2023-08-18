@@ -4,16 +4,14 @@ import { z } from 'zod';
 
 import { IAuth, ICreateUserDTO } from '../dto/login.dto';
 import { AuthFactoryService } from './auth-factory.service';
-import { AtlassianService } from 'src/core/atlassian/atlassian.service';
-import { AtlassianHelper } from 'src/core/atlassian/helpers/atlassian.helper';
-import { JwtService } from '@nestjs/jwt';
+import { AtlassianService } from '../../../core/atlassian/atlassian.service';
+import { AtlassianHelper } from '../../../core/atlassian/helpers/atlassian.helper';
 
 @Injectable()
 export class AuthUseCase {
   public constructor(
     private readonly authFactoryService: AuthFactoryService,
     private readonly atlassianService: AtlassianService,
-    private readonly jwtService: JwtService,
   ) {}
 
   public async login(registerDto: IAuth) {
@@ -24,15 +22,15 @@ export class AuthUseCase {
 
     const { code, state } = bodySchema.parse(registerDto);
 
-    const userExists = await this.authFactoryService.checkUserExists(state);
+    const exchangedCode = await this.atlassianService.exchangeCodeToAccessToken(code);
+
+    const userInfo = await this.atlassianService.getUserInformation(exchangedCode.access_token);
+
+    const userExists = await this.authFactoryService.checkUserExists(userInfo.email);
 
     if (userExists) {
       return userExists;
     }
-
-    const exchangedCode = await this.atlassianService.exchangeCodeToAccessToken(code);
-
-    const userInfo = await this.atlassianService.getUserInformation(exchangedCode.access_token);
 
     const accessTokenEstimai = await this.authFactoryService.generateJwtToken(state, userInfo);
 
@@ -48,8 +46,8 @@ export class AuthUseCase {
       jobTitle: userInfo.extended_profile.job_title,
     };
 
-    await this.authFactoryService.createUser(createUser);
+    const userCreated = await this.authFactoryService.createUser(createUser);
 
-    return accessTokenEstimai;
+    return userCreated;
   }
 }
