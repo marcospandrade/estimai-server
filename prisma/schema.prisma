@@ -23,4 +23,6 @@ model User {
   jobTitle             String?  @map("job_title")
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
+
+  @@map("users")
 }
