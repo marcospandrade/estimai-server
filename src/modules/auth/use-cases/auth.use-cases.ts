@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 import { z } from 'zod';
 
@@ -49,5 +49,15 @@ export class AuthUseCase {
     const userCreated = await this.authFactoryService.createUser(createUser);
 
     return userCreated;
+  }
+
+  public async checkUser(email: string) {
+    const user = await this.authFactoryService.checkUserExists(email);
+
+    if (!user) {
+      throw new UnauthorizedException(`User ${email} does not exist`);
+    }
+
+    return user;
   }
 }
