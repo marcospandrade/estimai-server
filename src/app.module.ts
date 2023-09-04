@@ -6,7 +6,6 @@ import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { SprintModule } from './modules/sprint/sprint.module';
 import { SetUserMiddleware } from './shared/middlewares/set-user.middleware';
-import helmet from 'helmet';
 
 @Module({
   imports: [

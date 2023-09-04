@@ -90,6 +90,27 @@ export class AtlassianService {
     return data;
   }
 
+  public async genericAtlassianCall(url: string, userId: string) {
+    const accessToken = await this.getToken(userId);
+
+    const { data } = await firstValueFrom(
+      this.httpService
+        .get<UserAtlassianInfo>(url, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .pipe(
+          catchError((error: AxiosError) => {
+            this.logger.error(error.response?.data);
+            throw new InternalServerErrorException(error.response?.data);
+          }),
+        ),
+    );
+
+    return data;
+  }
+
   private async refreshToken(userId: string, refreshToken: string): Promise<string> {
     const payloadRefreshToken: IRefreshTokenAtlassian = {
       grant_type: 'refresh_token',
