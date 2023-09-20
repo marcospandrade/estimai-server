@@ -24,6 +24,7 @@ model User {
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
   urlAuthenticated     String   @map("url_authenticated")
+  cloudId              String   @map("cloud_id")
 
   @@map("users")
 }
