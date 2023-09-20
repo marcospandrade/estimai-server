@@ -12,6 +12,7 @@ export interface ICreateUserDTO {
   name: string;
   email: string;
   urlAuthenticated: string;
+  cloudId: string;
   picture?: string;
   jobTitle?: string;
 }

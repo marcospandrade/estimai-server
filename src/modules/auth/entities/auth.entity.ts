@@ -5,4 +5,5 @@ export class User {
   picture: string;
   jobTitle: string;
   urlAuthenticated: string;
+  cloudId: string;
 }

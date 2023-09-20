@@ -28,10 +28,10 @@ export class AtlassianService {
     this.configAtlassian = this.configService.getAtlassian();
   }
 
-  public async getToken(userId: string) {
+  public async getToken(userEmail: string) {
     const userAuthInfo = await this.prismaService.user.findUnique({
       where: {
-        id: userId,
+        email: userEmail,
       },
       select: {
         accessTokenAtlassian: true,
@@ -48,7 +48,7 @@ export class AtlassianService {
       return userAuthInfo.accessTokenAtlassian;
     }
 
-    return this.refreshToken(userId, userAuthInfo.refreshToken);
+    return this.refreshToken(userEmail, userAuthInfo.refreshToken);
   }
 
   public async exchangeCodeToAccessToken(code: string): Promise<IExchangeResponse> {
@@ -110,8 +110,9 @@ export class AtlassianService {
     return data[0];
   }
 
-  public async genericAtlassianCall(url: string, userId: string) {
-    const accessToken = await this.getToken(userId);
+  public async genericAtlassianCall(url: string, userEmail: string) {
+    const accessToken = await this.getToken(userEmail);
+    const authHeader = `Basic ${Buffer.from(userEmail + ':' + accessToken).toString('base64')}`;
 
     const { data } = await firstValueFrom(
       this.httpService
@@ -119,6 +120,9 @@ export class AtlassianService {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
+          // headers: {
+          //   Authorization: authHeader,
+          // },
         })
         .pipe(
           catchError((error: AxiosError) => {
@@ -131,7 +135,13 @@ export class AtlassianService {
     return data;
   }
 
-  private async refreshToken(userId: string, refreshToken: string): Promise<string> {
+  public async getIssues(cloudId: string, userEmail: string) {
+    const urlGetIssues = `https://api.atlassian.com/ex/jira/${cloudId}/rest/api/3/search`;
+
+    return this.genericAtlassianCall(urlGetIssues, userEmail);
+  }
+
+  private async refreshToken(userEmail: string, refreshToken: string): Promise<string> {
     const payloadRefreshToken: IRefreshTokenAtlassian = {
       grant_type: 'refresh_token',
       client_id: this.configAtlassian.clientId,
@@ -150,7 +160,7 @@ export class AtlassianService {
 
     this.prismaService.user.update({
       where: {
-        id: userId,
+        email: userEmail,
       },
       data: {
         refreshToken: data.refresh_token,

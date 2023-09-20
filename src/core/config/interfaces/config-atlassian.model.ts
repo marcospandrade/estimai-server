@@ -5,8 +5,7 @@ export interface IAuthConfigAtlassian {
   client_id: string;
   client_secret: string;
 }
-export interface IExchangeCodeToAccessTokenAtlassian
-  extends IAuthConfigAtlassian {
+export interface IExchangeCodeToAccessTokenAtlassian extends IAuthConfigAtlassian {
   code: string;
   redirect_uri: string;
 }
@@ -19,6 +18,7 @@ export interface IAtlassianConfig {
   clientId: string;
   clientSecret: string;
   callbackUrl: string;
+  atlassianBaseUrl: string;
 }
 
 export interface IAtlassianAuth {
