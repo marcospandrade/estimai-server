@@ -23,6 +23,12 @@ model User {
   jobTitle             String?  @map("job_title")
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
+  urlAuthenticated     String   @map("url_authenticated")
 
   @@map("users")
+}
+
+model Tasks {
+  id      String @id @default(uuid())
+  issueId String
 }
