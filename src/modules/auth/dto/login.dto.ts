@@ -11,6 +11,7 @@ export interface ICreateUserDTO {
   refreshToken: string;
   name: string;
   email: string;
+  urlAuthenticated: string;
   picture?: string;
   jobTitle?: string;
 }

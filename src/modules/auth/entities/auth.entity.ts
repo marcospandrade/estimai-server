@@ -4,4 +4,5 @@ export class User {
   email: string;
   picture: string;
   jobTitle: string;
+  urlAuthenticated: string;
 }

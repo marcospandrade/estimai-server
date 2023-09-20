@@ -13,6 +13,7 @@ import {
 import { ConfigService } from '../config/config.service';
 import { UserAtlassianInfo } from './interfaces/user-info.model';
 import { PrismaService } from 'src/shared/prisma/prisma.service';
+import { IAccessibleResources } from './interfaces/accessible-resources';
 
 @Injectable()
 export class AtlassianService {
@@ -55,7 +56,7 @@ export class AtlassianService {
       grant_type: 'authorization_code',
       client_id: this.configAtlassian.clientId,
       client_secret: this.configAtlassian.clientSecret,
-      code: code,
+      code,
       redirect_uri: this.configAtlassian.callbackUrl,
     };
 
@@ -88,6 +89,25 @@ export class AtlassianService {
     );
 
     return data;
+  }
+
+  public async getAccessibleResources(accessToken: string) {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .get<IAccessibleResources[]>('https://api.atlassian.com/oauth/token/accessible-resources', {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .pipe(
+          catchError((error: AxiosError) => {
+            this.logger.error(error.response?.data);
+            throw new InternalServerErrorException(error.response?.data);
+          }),
+        ),
+    );
+
+    return data[0];
   }
 
   public async genericAtlassianCall(url: string, userId: string) {

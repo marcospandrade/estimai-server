@@ -32,7 +32,9 @@ export class AuthUseCase {
       return userExists;
     }
 
-    const accessTokenEstimai = await this.authFactoryService.generateJwtToken(state, userInfo);
+    const accessibleResources = await this.atlassianService.getAccessibleResources(exchangedCode.access_token);
+
+    const accessTokenEstimai = await this.authFactoryService.generateJwtToken(state, userInfo, accessibleResources.url);
 
     const createUser: ICreateUserDTO = {
       accessTokenEstimai,
@@ -44,6 +46,7 @@ export class AuthUseCase {
       email: userInfo.email,
       picture: userInfo.picture,
       jobTitle: userInfo.extended_profile.job_title,
+      urlAuthenticated: accessibleResources.url,
     };
 
     const userCreated = await this.authFactoryService.createUser(createUser);
