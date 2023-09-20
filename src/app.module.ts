@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { SprintModule } from './modules/sprint/sprint.module';
 import { SetUserMiddleware } from './shared/middlewares/set-user.middleware';
+import { IssuesModule } from './modules/issues/issues.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { SetUserMiddleware } from './shared/middlewares/set-user.middleware';
     }),
     AuthModule,
     SprintModule,
+    IssuesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
