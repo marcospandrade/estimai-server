@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SprintController } from './sprint.controller';
-import { SprintService } from './sprint.service';
+import { SprintService } from './use-cases/sprint.service';
 
 describe('SprintController', () => {
   let controller: SprintController;
