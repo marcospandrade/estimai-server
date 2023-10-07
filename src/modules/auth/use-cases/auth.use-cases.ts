@@ -6,6 +6,8 @@ import { IAuth, ICreateUserDTO } from '../dto/login.dto';
 import { AuthFactoryService } from './auth-factory.service';
 import { AtlassianService } from '../../../common/atlassian/atlassian.service';
 import { AtlassianHelper } from '../../../common/atlassian/helpers/atlassian.helper';
+import { User } from '../entities/auth.entity';
+import { mountGenericResponse } from '@shared/helpers/req-res.helpers';
 
 @Injectable()
 export class AuthUseCase {
@@ -60,13 +62,15 @@ export class AuthUseCase {
     return userCreated;
   }
 
-  public async checkUser(email: string) {
-    const user = await this.authFactoryService.checkUserExists(email);
+  public async refreshToken(userEmail: string) {
+    const user = await this.authFactoryService.checkUserExists(userEmail);
 
     if (!user) {
-      throw new UnauthorizedException(`User ${email} does not exist`);
+      throw new UnauthorizedException('User not found');
     }
 
-    return user;
+    const refreshedToken = await this.atlassianService.refreshToken(userEmail, user.refreshToken);
+
+    return mountGenericResponse(refreshedToken, 'Token refreshed with successfuly');
   }
 }

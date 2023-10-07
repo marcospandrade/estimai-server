@@ -1,9 +1,5 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import {
-    PARAMS_PROVIDER_TOKEN,
-    Params,
-    LoggerModule as PinoLoggerModule,
-} from 'nestjs-pino';
+import { PARAMS_PROVIDER_TOKEN, Params, LoggerModule as PinoLoggerModule } from 'nestjs-pino';
 import { getDefaultParams } from './logger.options';
 import { LoggerService } from './logger.service';
 export { PinoLogger, Logger } from 'nestjs-pino';
@@ -26,20 +22,20 @@ export { PinoLogger, Logger } from 'nestjs-pino';
  */
 @Module({})
 export class LoggerModule {
-    static register(params?: Params): DynamicModule {
-        const _params = params ?? getDefaultParams();
-        return {
-            global: true,
-            module: LoggerModule,
-            imports: [PinoLoggerModule.forRoot(_params)],
-            exports: [LoggerService],
-            providers: [
-                LoggerService,
-                {
-                    provide: PARAMS_PROVIDER_TOKEN,
-                    useValue: _params,
-                },
-            ],
-        };
-    }
+  static register(params?: Params): DynamicModule {
+    const _params = params ?? getDefaultParams();
+    return {
+      global: true,
+      module: LoggerModule,
+      imports: [PinoLoggerModule.forRoot(_params)],
+      exports: [LoggerService],
+      providers: [
+        LoggerService,
+        {
+          provide: PARAMS_PROVIDER_TOKEN,
+          useValue: _params,
+        },
+      ],
+    };
+  }
 }

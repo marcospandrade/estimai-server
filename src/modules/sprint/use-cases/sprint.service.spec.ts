@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SprintService } from './sprint.service';
+import { SprintService } from './sprint.use-cases';
 
 describe('SprintService', () => {
   let service: SprintService;

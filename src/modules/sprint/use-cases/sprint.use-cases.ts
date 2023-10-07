@@ -5,7 +5,7 @@ import { AtlassianService } from 'src/common/atlassian/atlassian.service';
 import { AuthUseCase } from '../../auth/use-cases/auth.use-cases';
 
 @Injectable()
-export class SprintService {
+export class SprintUseCases {
   public constructor(private atlassianService: AtlassianService, private readonly authUseCase: AuthUseCase) {}
 
   create(createSprintDto: CreateSprintDto) {
@@ -17,11 +17,9 @@ export class SprintService {
       throw new NotFoundException('Missing user id');
     }
 
-    const user = await this.authUseCase.checkUser(userEmail);
-
     return this.atlassianService.genericAtlassianCall(
       'https://api.atlassian.com/oauth/token/accessible-resources',
-      user.id,
+      userEmail,
     );
   }
 

@@ -6,7 +6,6 @@ import { AxiosError } from 'axios';
 import { catchError, firstValueFrom } from 'rxjs';
 
 import {
-  IAtlassianConfig,
   IExchangeCodeToAccessTokenAtlassian,
   IExchangeResponse,
   IRefreshTokenAtlassian,
@@ -20,7 +19,7 @@ import { EstimAiConfig } from 'src/app.module';
 @Injectable()
 export class AtlassianService {
   private readonly logger = new Logger(AtlassianService.name);
-  private configAtlassian: IAtlassianConfig;
+  // private configAtlassian: IAtlassianConfig;
 
   public constructor(
     private readonly configService: ConfigService<EstimAiConfig>,
@@ -141,11 +140,11 @@ export class AtlassianService {
     return this.genericAtlassianCall(urlGetIssues, userEmail);
   }
 
-  private async refreshToken(userEmail: string, refreshToken: string): Promise<string> {
+  public async refreshToken(userEmail: string, refreshToken: string): Promise<string> {
     const payloadRefreshToken: IRefreshTokenAtlassian = {
       grant_type: 'refresh_token',
-      client_id: this.configAtlassian.clientId,
-      client_secret: this.configAtlassian.clientSecret,
+      client_id: this.configService.get('ATLASSIAN_CLIENT_ID') ?? '',
+      client_secret: this.configService.get('ATLASSIAN_CLIENT_SECRET') ?? '',
       refresh_token: refreshToken,
     };
 

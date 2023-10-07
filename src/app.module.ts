@@ -26,14 +26,14 @@ export class EstimAiConfig extends IntersectionType(BaseAppConfig, AuthConfig) {
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(SetUserMiddleware)
-      .exclude({
-        path: 'auth/login',
-        method: RequestMethod.POST,
-      })
-      .forRoutes(
-        '*', // apply to all routes in the app
-      );
+    // consumer
+    //   .apply(SetUserMiddleware)
+    //   .exclude({
+    //     path: 'auth/login',
+    //     method: RequestMethod.POST,
+    //   })
+    //   .forRoutes(
+    //     '*', // apply to all routes in the app
+    //   );
   }
 }

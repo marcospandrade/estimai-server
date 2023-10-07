@@ -6,21 +6,33 @@ import { AuthController } from './auth.controller';
 import { PrismaModule } from 'src/shared/prisma/prisma.module';
 import { AuthUseCase } from './use-cases/auth.use-cases';
 import { AtlassianModule } from 'src/common/atlassian/atlassian.module';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { EstimAiConfig } from 'src/app.module';
 
 @Module({
   imports: [
     PrismaModule,
     HttpModule,
     AtlassianModule,
-    JwtModule.register({
-      global: true,
-      secret: process.env.JWT_KEY,
-      signOptions: { expiresIn: process.env.JWT_EXPIRES },
+    JwtModule.registerAsync({
+      useFactory: (configService: ConfigService<EstimAiConfig>) => {
+        const secret = configService.get('JWT_KEY');
+        const expiresIn = configService.get('JWT_EXPIRES');
+
+        return {
+          global: true,
+          secret,
+          signOptions: {
+            expiresIn,
+          },
+        };
+      },
+      inject: [ConfigService],
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthFactoryService, AuthUseCase],
-  exports: [AuthUseCase],
+  providers: [AuthUseCase, AuthFactoryService, JwtService],
+  exports: [AuthUseCase, AuthFactoryService, JwtService],
 })
 export class AuthModule {}

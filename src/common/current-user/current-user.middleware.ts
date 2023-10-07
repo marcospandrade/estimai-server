@@ -1,7 +1,7 @@
 import { Injectable, NestMiddleware, Request } from '@nestjs/common';
-// import { ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { Response, NextFunction } from 'express';
-// import { BaseAppConfig } from '../config/config.module';
+import { BaseAppConfig } from '../config/config.module';
 import { LoggerService } from '../logger/logger.service';
 import { IUser } from '@modules/auth/entities/user.entity';
 
@@ -20,7 +20,7 @@ export interface RequestWithUser extends Request {
 @Injectable()
 export class CurrentUserMiddleware implements NestMiddleware {
   constructor(
-    // private readonly configService: ConfigService<BaseAppConfig>,
+    private readonly configService: ConfigService<BaseAppConfig>,
     private readonly loggerService: LoggerService,
   ) {}
 

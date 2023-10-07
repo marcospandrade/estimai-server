@@ -8,7 +8,7 @@ export class IssuesUseCases {
 
   public async findAll({ cloudId, email }: User) {
     if (!cloudId || !email) {
-      throw new BadRequestException('Error trying to get issues');
+      throw new BadRequestException('Error trying to get issues because it is missing information');
     }
 
     const getIssues = await this.atlassianService.getIssues(cloudId, email);

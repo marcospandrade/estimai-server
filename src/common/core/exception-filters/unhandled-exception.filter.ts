@@ -16,7 +16,7 @@ export class UnhandledExceptionFilter implements ExceptionFilter {
   public constructor(private readonly logger: LoggerService) {}
 
   catch(exception: Error | IntegrationError, host: ArgumentsHost) {
-    const isNotProduction = process.env.NODE_ENV === 'production';
+    const isNotProduction = process.env.NODE_ENV !== 'production';
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();

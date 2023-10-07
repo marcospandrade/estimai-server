@@ -1,42 +1,42 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { SprintService } from './use-cases/sprint.service';
 import { CreateSprintDto } from './dto/create-sprint.dto';
 import { UpdateSprintDto } from './dto/update-sprint.dto';
-import { CurrentUser } from 'src/shared/decorators/current-user.decorator';
+import { CurrentUser } from '@common/current-user/current-user.decorator';
 import { User } from '../auth/entities/auth.entity';
+import { SprintUseCases } from './use-cases/sprint.use-cases';
 
 @Controller('sprint')
 export class SprintController {
-  constructor(private readonly sprintService: SprintService) {}
+  constructor(private readonly sprintUseCases: SprintUseCases) {}
 
   @Post()
   create(@Body() createSprintDto: CreateSprintDto) {
-    return this.sprintService.create(createSprintDto);
+    return this.sprintUseCases.create(createSprintDto);
   }
 
   @Get('/test')
   testSprint(@CurrentUser() user: User) {
     console.log('Sprint', user);
-    return this.sprintService.findAll(user.email);
+    return this.sprintUseCases.findAll(user.email);
   }
 
   @Get()
-  findAll(@CurrentUser('email') id: string) {
-    return this.sprintService.findAll(id);
+  findAll(@CurrentUser() user: User) {
+    return this.sprintUseCases.findAll(user.email);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.sprintService.findOne(+id);
+    return this.sprintUseCases.findOne(+id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateSprintDto: UpdateSprintDto) {
-    return this.sprintService.update(+id, updateSprintDto);
+    return this.sprintUseCases.update(+id, updateSprintDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.sprintService.remove(+id);
+    return this.sprintUseCases.remove(+id);
   }
 }

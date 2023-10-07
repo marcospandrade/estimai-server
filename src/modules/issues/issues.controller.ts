@@ -1,7 +1,7 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { IssuesUseCases } from './use-cases/issues.use-cases';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
-import { CurrentUser } from 'src/shared/decorators/current-user.decorator';
+import { CurrentUser } from '@common/current-user/current-user.decorator';
 import { User } from '../auth/entities/auth.entity';
 
 @Controller('issues')
