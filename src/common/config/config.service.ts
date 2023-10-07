@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IAtlassianConfig } from './interfaces/config-atlassian.model';
+import { IAtlassianConfig } from '../interfaces/config-atlassian.model';
 
 @Injectable()
 export class ConfigService {

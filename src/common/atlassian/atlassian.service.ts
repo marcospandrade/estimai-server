@@ -1,5 +1,6 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 
 import { AxiosError } from 'axios';
 import { catchError, firstValueFrom } from 'rxjs';
@@ -9,11 +10,12 @@ import {
   IExchangeCodeToAccessTokenAtlassian,
   IExchangeResponse,
   IRefreshTokenAtlassian,
-} from '../config/interfaces/config-atlassian.model';
-import { ConfigService } from '../config/config.service';
+} from '../interfaces/config-atlassian.model';
+
 import { UserAtlassianInfo } from './interfaces/user-info.model';
 import { PrismaService } from 'src/shared/prisma/prisma.service';
 import { IAccessibleResources } from './interfaces/accessible-resources';
+import { EstimAiConfig } from 'src/app.module';
 
 @Injectable()
 export class AtlassianService {
@@ -21,12 +23,10 @@ export class AtlassianService {
   private configAtlassian: IAtlassianConfig;
 
   public constructor(
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService<EstimAiConfig>,
     private readonly httpService: HttpService,
     private readonly prismaService: PrismaService,
-  ) {
-    this.configAtlassian = this.configService.getAtlassian();
-  }
+  ) {}
 
   public async getToken(userEmail: string) {
     const userAuthInfo = await this.prismaService.user.findUnique({
@@ -54,10 +54,10 @@ export class AtlassianService {
   public async exchangeCodeToAccessToken(code: string): Promise<IExchangeResponse> {
     const payloadAuthAtlassian: IExchangeCodeToAccessTokenAtlassian = {
       grant_type: 'authorization_code',
-      client_id: this.configAtlassian.clientId,
-      client_secret: this.configAtlassian.clientSecret,
+      client_id: this.configService.get('ATLASSIAN_CLIENT_ID') ?? '',
+      client_secret: this.configService.get('ATLASSIAN_CLIENT_SECRET') ?? '',
       code,
-      redirect_uri: this.configAtlassian.callbackUrl,
+      redirect_uri: this.configService.get('ATLASSIAN_CALLBACK_URL') ?? '',
     };
 
     const { data } = await firstValueFrom(

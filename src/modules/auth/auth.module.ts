@@ -5,7 +5,7 @@ import { AuthFactoryService } from './use-cases/auth-factory.service';
 import { AuthController } from './auth.controller';
 import { PrismaModule } from 'src/shared/prisma/prisma.module';
 import { AuthUseCase } from './use-cases/auth.use-cases';
-import { AtlassianModule } from 'src/core/atlassian/atlassian.module';
+import { AtlassianModule } from 'src/common/atlassian/atlassian.module';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({

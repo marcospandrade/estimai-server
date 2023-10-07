@@ -4,7 +4,7 @@ import { PrismaService } from 'src/shared/prisma/prisma.service';
 import { ICreateUserDTO } from '../dto/login.dto';
 import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
-import { UserAtlassianInfo } from 'src/core/atlassian/interfaces/user-info.model';
+import { UserAtlassianInfo } from 'src/common/atlassian/interfaces/user-info.model';
 @Injectable()
 export class AuthFactoryService {
   public constructor(private readonly prismaService: PrismaService, private readonly jwtService: JwtService) {}

@@ -1,24 +1,28 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { IntersectionType } from '@nestjs/mapped-types';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { BaseAppConfig, ConfigModule } from './common/config/config.module';
+import { LoggerModule } from './common/logger/logger.module';
+import { CoreModule } from './common/core/core.module';
+import { AuthConfig } from './config';
+
 import { AuthModule } from './modules/auth/auth.module';
 import { SprintModule } from './modules/sprint/sprint.module';
-import { SetUserMiddleware } from './shared/middlewares/set-user.middleware';
 import { IssuesModule } from './modules/issues/issues.module';
+import { SetUserMiddleware } from './shared/middlewares/set-user.middleware';
+
+export class EstimAiConfig extends IntersectionType(BaseAppConfig, AuthConfig) {}
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
+    ConfigModule.registerAsync({ AppConfig: EstimAiConfig }),
+    CoreModule.register(),
+    LoggerModule.register(),
     AuthModule,
     SprintModule,
     IssuesModule,
+    CoreModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

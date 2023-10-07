@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { AtlassianService } from 'src/core/atlassian/atlassian.service';
+import { AtlassianService } from 'src/common/atlassian/atlassian.service';
 import { User } from 'src/modules/auth/entities/auth.entity';
 
 @Injectable()

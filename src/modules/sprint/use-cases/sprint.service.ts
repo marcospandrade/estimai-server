@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSprintDto } from '../dto/create-sprint.dto';
 import { UpdateSprintDto } from '../dto/update-sprint.dto';
-import { AtlassianService } from 'src/core/atlassian/atlassian.service';
+import { AtlassianService } from 'src/common/atlassian/atlassian.service';
 import { AuthUseCase } from '../../auth/use-cases/auth.use-cases';
 
 @Injectable()

@@ -16,6 +16,7 @@ export class SprintController {
 
   @Get('/test')
   testSprint(@CurrentUser() user: User) {
+    console.log('Sprint', user);
     return this.sprintService.findAll(user.email);
   }
 

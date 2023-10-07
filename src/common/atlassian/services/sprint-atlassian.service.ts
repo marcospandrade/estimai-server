@@ -9,7 +9,7 @@ import {
   IExchangeCodeToAccessTokenAtlassian,
   IExchangeResponse,
   IRefreshTokenAtlassian,
-} from '../../config/interfaces/config-atlassian.model';
+} from '../../interfaces/config-atlassian.model';
 import { ConfigService } from '../../config/config.service';
 import { UserAtlassianInfo } from '../interfaces/user-info.model';
 import { PrismaService } from 'src/shared/prisma/prisma.service';

@@ -4,8 +4,8 @@ import { z } from 'zod';
 
 import { IAuth, ICreateUserDTO } from '../dto/login.dto';
 import { AuthFactoryService } from './auth-factory.service';
-import { AtlassianService } from '../../../core/atlassian/atlassian.service';
-import { AtlassianHelper } from '../../../core/atlassian/helpers/atlassian.helper';
+import { AtlassianService } from '../../../common/atlassian/atlassian.service';
+import { AtlassianHelper } from '../../../common/atlassian/helpers/atlassian.helper';
 
 @Injectable()
 export class AuthUseCase {
