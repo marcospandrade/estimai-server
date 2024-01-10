@@ -12,7 +12,7 @@ import { EstimAiConfig } from 'src/app.module';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   public constructor(
     private readonly authFactory: AuthFactoryService,
-    private configService: ConfigService<EstimAiConfig>,
+    private readonly configService: ConfigService<EstimAiConfig>,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

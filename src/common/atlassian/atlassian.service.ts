@@ -157,7 +157,7 @@ export class AtlassianService {
       ),
     );
 
-    this.prismaService.user.update({
+    await this.prismaService.user.update({
       where: {
         email: userEmail,
       },

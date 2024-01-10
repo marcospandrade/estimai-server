@@ -5,9 +5,14 @@ import { ICreateUserDTO } from '../dto/login.dto';
 import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import { UserAtlassianInfo } from 'src/common/atlassian/interfaces/user-info.model';
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class AuthFactoryService {
-  public constructor(private readonly prismaService: PrismaService, private readonly jwtService: JwtService) {}
+  public constructor(
+    private readonly prismaService: PrismaService,
+    private readonly jwtService: JwtService,
+    private configService: ConfigService,
+  ) {}
 
   public async checkUserExists(email: string): Promise<User | null> {
     const user = await this.prismaService.user.findUnique({
@@ -20,21 +25,17 @@ export class AuthFactoryService {
   }
 
   public async createUser(payload: ICreateUserDTO): Promise<User> {
-    let user;
-
-    user = await this.prismaService.user.findUnique({
+    const user = await this.prismaService.user.upsert({
       where: {
         state: payload.state,
       },
+      update: {
+        ...payload,
+      },
+      create: {
+        ...payload,
+      },
     });
-
-    if (!user) {
-      user = await this.prismaService.user.create({
-        data: {
-          ...payload,
-        },
-      });
-    }
 
     return user;
   }
@@ -56,6 +57,6 @@ export class AuthFactoryService {
       cloudId,
     };
 
-    return this.jwtService.signAsync(payload);
+    return this.jwtService.signAsync(payload, { secret: this.configService.get('JWT_KEY') });
   }
 }

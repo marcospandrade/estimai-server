@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
+import { JwtModule, JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 import { AuthFactoryService } from './use-cases/auth-factory.service';
 import { AuthController } from './auth.controller';
 import { PrismaModule } from 'src/shared/prisma/prisma.module';
 import { AuthUseCase } from './use-cases/auth.use-cases';
 import { AtlassianModule } from 'src/common/atlassian/atlassian.module';
-import { JwtModule, JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
 import { EstimAiConfig } from 'src/app.module';
 
 @Module({
@@ -32,7 +32,7 @@ import { EstimAiConfig } from 'src/app.module';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthUseCase, AuthFactoryService, JwtService],
+  providers: [AuthUseCase, AuthFactoryService, JwtService, ConfigService],
   exports: [AuthUseCase, AuthFactoryService, JwtService],
 })
 export class AuthModule {}

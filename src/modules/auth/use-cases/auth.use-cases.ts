@@ -6,7 +6,6 @@ import { IAuth, ICreateUserDTO } from '../dto/login.dto';
 import { AuthFactoryService } from './auth-factory.service';
 import { AtlassianService } from '../../../common/atlassian/atlassian.service';
 import { AtlassianHelper } from '../../../common/atlassian/helpers/atlassian.helper';
-import { User } from '../entities/auth.entity';
 import { mountGenericResponse } from '@shared/helpers/req-res.helpers';
 
 @Injectable()
@@ -31,7 +30,7 @@ export class AuthUseCase {
     const userExists = await this.authFactoryService.checkUserExists(userInfo.email);
 
     if (userExists) {
-      return userExists;
+      return mountGenericResponse(userExists, 'Success login');
     }
 
     const accessibleResources = await this.atlassianService.getAccessibleResources(exchangedCode.access_token);
@@ -59,7 +58,7 @@ export class AuthUseCase {
 
     const userCreated = await this.authFactoryService.createUser(createUser);
 
-    return userCreated;
+    return mountGenericResponse(userCreated, 'Success login');
   }
 
   public async refreshToken(userEmail: string) {
