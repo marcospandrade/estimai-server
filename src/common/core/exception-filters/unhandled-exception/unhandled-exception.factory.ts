@@ -1,7 +1,5 @@
 import { Request } from 'express';
-
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-
 import { LoggerService } from '../../../logger/logger.service';
 import { ValidationFailedException } from '../../exceptions/validation-failed-exception';
 import { ErrorResponse } from './types/error-response';
