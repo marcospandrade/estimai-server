@@ -13,6 +13,9 @@ import { AxiosFactoryProvider } from './exception-filters/axios/axios.provider';
 import { FormatResponseInterceptor } from './interceptors/format-response/format-response.interceptor';
 import { FormatResponseFactory } from './interceptors/format-response/format-response.factory';
 import { FormatResponseFactoryProvider } from './interceptors/format-response/format-response.provider';
+import { ValidateSchemaFactory } from './interceptors/validate-schema/validate-schema.factory';
+import { ValidateSchemaInterceptor } from './interceptors/validate-schema/validate-schema.interceptor';
+import { ValidateSchemaFactoryProvider } from './interceptors/validate-schema/validate-schema.provider';
 
 @Module({})
 export class CoreModule {
@@ -67,8 +70,15 @@ export class CoreModule {
         UnhandledExceptionFactory,
         AxiosFactoryProvider,
         FormatResponseFactoryProvider,
+        ValidateSchemaFactoryProvider,
       ],
-      exports: [CoreService, UnhandledExceptionFactoryProvider, AxiosFactoryProvider, FormatResponseFactoryProvider],
+      exports: [
+        CoreService,
+        UnhandledExceptionFactoryProvider,
+        AxiosFactoryProvider,
+        FormatResponseFactoryProvider,
+        ValidateSchemaFactoryProvider,
+      ],
     };
   }
 }
