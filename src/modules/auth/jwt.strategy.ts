@@ -10,24 +10,24 @@ import { EstimAiConfig } from 'src/app.module';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  public constructor(
-    private readonly authFactory: AuthFactoryService,
-    private readonly configService: ConfigService<EstimAiConfig>,
-  ) {
-    super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false,
-      secretOrKey: configService.get('JWT_KEY'),
-    });
-  }
-
-  async validate(payload: TokenInfo) {
-    const user = await this.authFactory.checkUserExists(payload.email);
-
-    if (!user) {
-      throw new UnauthorizedException();
+    public constructor(
+        private readonly authFactory: AuthFactoryService,
+        private readonly configService: ConfigService<EstimAiConfig>,
+    ) {
+        super({
+            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+            ignoreExpiration: false,
+            secretOrKey: configService.get('JWT_KEY'),
+        });
     }
 
-    return user;
-  }
+    async validate(payload: TokenInfo) {
+        const user = await this.authFactory.checkUserExists(payload.email);
+
+        if (!user) {
+            throw new UnauthorizedException();
+        }
+
+        return user;
+    }
 }

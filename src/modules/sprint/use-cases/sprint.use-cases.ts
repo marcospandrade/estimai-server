@@ -6,32 +6,32 @@ import { AuthUseCase } from '../../auth/use-cases/auth.use-cases';
 
 @Injectable()
 export class SprintUseCases {
-  public constructor(private atlassianService: AtlassianService, private readonly authUseCase: AuthUseCase) {}
+    public constructor(private atlassianService: AtlassianService, private readonly authUseCase: AuthUseCase) {}
 
-  create(createSprintDto: CreateSprintDto) {
-    return 'This action adds a new sprint';
-  }
-
-  async findAll(userEmail: string) {
-    if (!userEmail) {
-      throw new NotFoundException('Missing user id');
+    create(createSprintDto: CreateSprintDto) {
+        return 'This action adds a new sprint';
     }
 
-    return this.atlassianService.genericAtlassianCall(
-      'https://api.atlassian.com/oauth/token/accessible-resources',
-      userEmail,
-    );
-  }
+    async findAll(userEmail: string) {
+        if (!userEmail) {
+            throw new NotFoundException('Missing user id');
+        }
 
-  findOne(id: number) {
-    return `This action returns a #${id} sprint`;
-  }
+        return this.atlassianService.genericAtlassianCall(
+            'https://api.atlassian.com/oauth/token/accessible-resources',
+            userEmail,
+        );
+    }
 
-  update(id: number, updateSprintDto: UpdateSprintDto) {
-    return `This action updates a #${id} sprint`;
-  }
+    findOne(id: number) {
+        return `This action returns a #${id} sprint`;
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} sprint`;
-  }
+    update(id: number, updateSprintDto: UpdateSprintDto) {
+        return `This action updates a #${id} sprint`;
+    }
+
+    remove(id: number) {
+        return `This action removes a #${id} sprint`;
+    }
 }

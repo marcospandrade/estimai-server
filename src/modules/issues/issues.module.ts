@@ -5,8 +5,8 @@ import { AtlassianModule } from 'src/common/atlassian/atlassian.module';
 import { JwtService } from '@nestjs/jwt';
 
 @Module({
-  imports: [AtlassianModule],
-  controllers: [IssuesController],
-  providers: [IssuesUseCases, JwtService],
+    imports: [AtlassianModule],
+    controllers: [IssuesController],
+    providers: [IssuesUseCases, JwtService],
 })
 export class IssuesModule {}

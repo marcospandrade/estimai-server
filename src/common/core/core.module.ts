@@ -19,66 +19,66 @@ import { ValidateSchemaFactoryProvider } from './interceptors/validate-schema/va
 
 @Module({})
 export class CoreModule {
-  static register(): DynamicModule {
-    return {
-      global: true,
-      module: CoreModule,
-      imports: [TerminusModule],
-      controllers: [CoreController],
-      providers: [
-        CoreService,
-        {
-          provide: APP_FILTER,
-          useFactory: (loggerService: LoggerService, factory: UnhandledExceptionFactory) => {
-            loggerService.info('Registering global exception filter');
+    static register(): DynamicModule {
+        return {
+            global: true,
+            module: CoreModule,
+            imports: [TerminusModule],
+            controllers: [CoreController],
+            providers: [
+                CoreService,
+                {
+                    provide: APP_FILTER,
+                    useFactory: (loggerService: LoggerService, factory: UnhandledExceptionFactory) => {
+                        loggerService.info('Registering global exception filter');
 
-            return new UnhandledExceptionFilter(loggerService, factory);
-          },
-          inject: [LoggerService, UnhandledExceptionFactory],
-        },
-        {
-          provide: APP_FILTER,
-          useFactory: (logger: LoggerService, factory: AxiosFactory) => {
-            logger.info('Registering AxiosFilter');
+                        return new UnhandledExceptionFilter(loggerService, factory);
+                    },
+                    inject: [LoggerService, UnhandledExceptionFactory],
+                },
+                {
+                    provide: APP_FILTER,
+                    useFactory: (logger: LoggerService, factory: AxiosFactory) => {
+                        logger.info('Registering AxiosFilter');
 
-            return new AxiosFilter(logger, factory);
-          },
-          inject: [LoggerService, AxiosFactory],
-        },
-        {
-          provide: APP_INTERCEPTOR,
-          useFactory: (logger: LoggerService, factory: FormatResponseFactory) => {
-            logger.info('Registering FormatResponseInterceptor');
+                        return new AxiosFilter(logger, factory);
+                    },
+                    inject: [LoggerService, AxiosFactory],
+                },
+                {
+                    provide: APP_INTERCEPTOR,
+                    useFactory: (logger: LoggerService, factory: FormatResponseFactory) => {
+                        logger.info('Registering FormatResponseInterceptor');
 
-            return new FormatResponseInterceptor(logger, factory);
-          },
-          inject: [LoggerService, FormatResponseFactory],
-        },
-        {
-          provide: APP_INTERCEPTOR,
-          useFactory: (logger: LoggerService, factory: ValidateSchemaFactory) => {
-            logger.info('Registering ValidateSchemaInterceptor');
+                        return new FormatResponseInterceptor(logger, factory);
+                    },
+                    inject: [LoggerService, FormatResponseFactory],
+                },
+                {
+                    provide: APP_INTERCEPTOR,
+                    useFactory: (logger: LoggerService, factory: ValidateSchemaFactory) => {
+                        logger.info('Registering ValidateSchemaInterceptor');
 
-            return new ValidateSchemaInterceptor(logger, factory);
-          },
-          inject: [LoggerService, ValidateSchemaFactory],
-        },
-        {
-          provide: LoggerService,
-          useValue: new LoggerService(),
-        },
-        UnhandledExceptionFactory,
-        AxiosFactoryProvider,
-        FormatResponseFactoryProvider,
-        ValidateSchemaFactoryProvider,
-      ],
-      exports: [
-        CoreService,
-        UnhandledExceptionFactoryProvider,
-        AxiosFactoryProvider,
-        FormatResponseFactoryProvider,
-        ValidateSchemaFactoryProvider,
-      ],
-    };
-  }
+                        return new ValidateSchemaInterceptor(logger, factory);
+                    },
+                    inject: [LoggerService, ValidateSchemaFactory],
+                },
+                {
+                    provide: LoggerService,
+                    useValue: new LoggerService(),
+                },
+                UnhandledExceptionFactory,
+                AxiosFactoryProvider,
+                FormatResponseFactoryProvider,
+                ValidateSchemaFactoryProvider,
+            ],
+            exports: [
+                CoreService,
+                UnhandledExceptionFactoryProvider,
+                AxiosFactoryProvider,
+                FormatResponseFactoryProvider,
+                ValidateSchemaFactoryProvider,
+            ],
+        };
+    }
 }

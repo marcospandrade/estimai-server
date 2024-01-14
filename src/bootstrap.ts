@@ -3,15 +3,15 @@ import { configureHelmet } from './common/config/common/helmet.config';
 import { AppModule } from './app.module';
 
 export async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule);
 
-  app.enableCors({
-    origin: true,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
-  });
+    app.enableCors({
+        origin: true,
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+        credentials: true,
+    });
 
-  configureHelmet(app);
+    configureHelmet(app);
 
-  await app.listen(3001);
+    await app.listen(3001);
 }

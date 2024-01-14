@@ -1,7 +1,7 @@
 import { ClassConstructor } from 'class-transformer';
 
 export interface ValidateResponseSchemaMetadata<AnyClass> {
-  schema: ClassConstructor<AnyClass>;
+    schema: ClassConstructor<AnyClass>;
 }
 
 export type ValidateResponseSchemaOptions<AnyClass> = Omit<ValidateResponseSchemaMetadata<AnyClass>, 'schema'>;
@@ -23,20 +23,20 @@ export const VALIDATE_RESPONSE_SCHEMA_METADATA_KEY = 'custom::validateResponseSc
  * }
  */
 export const ValidateResponseSchema = <
-  AnyObject extends Record<string, any>,
-  Schema extends ClassConstructor<AnyObject>,
+    AnyObject extends Record<string, any>,
+    Schema extends ClassConstructor<AnyObject>,
 >(
-  schema: Schema,
-  options?: ValidateResponseSchemaOptions<InstanceType<Schema>>,
+    schema: Schema,
+    options?: ValidateResponseSchemaOptions<InstanceType<Schema>>,
 ) => {
-  return (target: object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<any>) => {
-    const metadata = {
-      schema: schema as any,
-      ...options,
-    } as ValidateResponseSchemaMetadata<InstanceType<Schema>>;
+    return (target: object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<any>) => {
+        const metadata = {
+            schema: schema as any,
+            ...options,
+        } as ValidateResponseSchemaMetadata<InstanceType<Schema>>;
 
-    Reflect.defineMetadata(VALIDATE_RESPONSE_SCHEMA_METADATA_KEY, metadata, descriptor.value);
+        Reflect.defineMetadata(VALIDATE_RESPONSE_SCHEMA_METADATA_KEY, metadata, descriptor.value);
 
-    return descriptor;
-  };
+        return descriptor;
+    };
 };

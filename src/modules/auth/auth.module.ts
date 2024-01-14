@@ -11,28 +11,28 @@ import { AtlassianModule } from 'src/common/atlassian/atlassian.module';
 import { EstimAiConfig } from 'src/app.module';
 
 @Module({
-  imports: [
-    PrismaModule,
-    HttpModule,
-    AtlassianModule,
-    JwtModule.registerAsync({
-      useFactory: (configService: ConfigService<EstimAiConfig>) => {
-        const secret = configService.get('JWT_KEY');
-        const expiresIn = configService.get('JWT_EXPIRES');
+    imports: [
+        PrismaModule,
+        HttpModule,
+        AtlassianModule,
+        JwtModule.registerAsync({
+            useFactory: (configService: ConfigService<EstimAiConfig>) => {
+                const secret = configService.get('JWT_KEY');
+                const expiresIn = configService.get('JWT_EXPIRES');
 
-        return {
-          global: true,
-          secret,
-          signOptions: {
-            expiresIn,
-          },
-        };
-      },
-      inject: [ConfigService],
-    }),
-  ],
-  controllers: [AuthController],
-  providers: [AuthUseCase, AuthFactoryService, JwtService, ConfigService],
-  exports: [AuthUseCase, AuthFactoryService, JwtService],
+                return {
+                    global: true,
+                    secret,
+                    signOptions: {
+                        expiresIn,
+                    },
+                };
+            },
+            inject: [ConfigService],
+        }),
+    ],
+    controllers: [AuthController],
+    providers: [AuthUseCase, AuthFactoryService, JwtService, ConfigService],
+    exports: [AuthUseCase, AuthFactoryService, JwtService],
 })
 export class AuthModule {}

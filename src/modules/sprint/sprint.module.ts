@@ -10,8 +10,8 @@ import { AuthModule } from '@modules/auth/auth.module';
 import { JwtService } from '@nestjs/jwt';
 
 @Module({
-  imports: [AtlassianModule, PrismaModule],
-  controllers: [SprintController],
-  providers: [SprintUseCases, AuthUseCase, AuthFactoryService, JwtService],
+    imports: [AtlassianModule, PrismaModule],
+    controllers: [SprintController],
+    providers: [SprintUseCases, AuthUseCase, AuthFactoryService, JwtService],
 })
 export class SprintModule {}

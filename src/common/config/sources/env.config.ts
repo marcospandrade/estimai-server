@@ -6,20 +6,20 @@ import { IsNotEmpty, IsString, IsIn } from 'class-validator';
 export type Environment = 'local' | 'dev' | 'prod' | 'test';
 
 class BuildConfig {
-  @IsNotEmpty()
-  @Transform(({ value }) => Number(value))
-  /** The port to start the nest server */
-  APP_PORT!: number;
+    @IsNotEmpty()
+    @Transform(({ value }) => Number(value))
+    /** The port to start the nest server */
+    APP_PORT!: number;
 }
 
 export class BaseEnvConfig extends IntersectionType(BuildConfig) {
-  @IsNotEmpty()
-  @IsIn(['local', 'dev', 'test', 'prod'])
-  /** The environment configuration, will default to `dev` */
-  NODE_ENV!: Environment;
+    @IsNotEmpty()
+    @IsIn(['local', 'dev', 'test', 'prod'])
+    /** The environment configuration, will default to `dev` */
+    NODE_ENV!: Environment;
 
-  @IsNotEmpty()
-  @IsString()
-  /** The lowercase name of the app, in snake case */
-  APP_NAME!: string;
+    @IsNotEmpty()
+    @IsString()
+    /** The lowercase name of the app, in snake case */
+    APP_NAME!: string;
 }

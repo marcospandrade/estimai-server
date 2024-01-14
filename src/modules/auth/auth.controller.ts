@@ -12,23 +12,23 @@ import { FormatResponseInterceptor } from '@shared/interceptors/format-response/
 @Controller('auth')
 @UseInterceptors(FormatResponseInterceptor)
 export class AuthController {
-  constructor(private readonly authUseCase: AuthUseCase) {}
+    constructor(private readonly authUseCase: AuthUseCase) {}
 
-  @HttpCode(HttpStatus.OK)
-  @Post('login')
-  public login(@Body() body: IAuth) {
-    return this.authUseCase.login(body);
-  }
+    @HttpCode(HttpStatus.OK)
+    @Post('login')
+    public login(@Body() body: IAuth) {
+        return this.authUseCase.login(body);
+    }
 
-  @UseGuards(AuthGuard)
-  @Get('profile')
-  getProfile(@Request() req: RequestUser) {
-    return req.user;
-  }
+    @UseGuards(AuthGuard)
+    @Get('profile')
+    getProfile(@Request() req: RequestUser) {
+        return req.user;
+    }
 
-  @UseGuards(AuthGuard)
-  @Post('/refresh-token')
-  refreshToken(@CurrentUser() user: UserAtlassianInfo) {
-    return this.authUseCase.refreshToken(user.email);
-  }
+    @UseGuards(AuthGuard)
+    @Post('/refresh-token')
+    refreshToken(@CurrentUser() user: UserAtlassianInfo) {
+        return this.authUseCase.refreshToken(user.email);
+    }
 }

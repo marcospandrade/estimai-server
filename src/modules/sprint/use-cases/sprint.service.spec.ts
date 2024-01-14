@@ -2,17 +2,17 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SprintService } from './sprint.use-cases';
 
 describe('SprintService', () => {
-  let service: SprintService;
+    let service: SprintService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [SprintService],
-    }).compile();
+    beforeEach(async () => {
+        const module: TestingModule = await Test.createTestingModule({
+            providers: [SprintService],
+        }).compile();
 
-    service = module.get<SprintService>(SprintService);
-  });
+        service = module.get<SprintService>(SprintService);
+    });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
+    it('should be defined', () => {
+        expect(service).toBeDefined();
+    });
 });

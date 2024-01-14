@@ -14,26 +14,26 @@ import { SetUserMiddleware } from './shared/middlewares/set-user.middleware';
 export class EstimAiConfig extends IntersectionType(BaseAppConfig, AuthConfig) {}
 
 @Module({
-  imports: [
-    ConfigModule.registerAsync({ AppConfig: EstimAiConfig }),
-    CoreModule.register(),
-    LoggerModule.register(),
-    AuthModule,
-    SprintModule,
-    IssuesModule,
-    CoreModule,
-  ],
+    imports: [
+        ConfigModule.registerAsync({ AppConfig: EstimAiConfig }),
+        CoreModule.register(),
+        LoggerModule.register(),
+        AuthModule,
+        SprintModule,
+        IssuesModule,
+        CoreModule,
+    ],
 })
 export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    // consumer
-    //   .apply(SetUserMiddleware)
-    //   .exclude({
-    //     path: 'auth/login',
-    //     method: RequestMethod.POST,
-    //   })
-    //   .forRoutes(
-    //     '*', // apply to all routes in the app
-    //   );
-  }
+    configure(consumer: MiddlewareConsumer) {
+        // consumer
+        //   .apply(SetUserMiddleware)
+        //   .exclude({
+        //     path: 'auth/login',
+        //     method: RequestMethod.POST,
+        //   })
+        //   .forRoutes(
+        //     '*', // apply to all routes in the app
+        //   );
+    }
 }

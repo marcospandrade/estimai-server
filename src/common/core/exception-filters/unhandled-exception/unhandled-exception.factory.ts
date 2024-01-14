@@ -7,27 +7,27 @@ import { InterceptedError } from './types/intercepted-error';
 
 @Injectable()
 export class UnhandledExceptionFactory {
-  constructor(private logger: LoggerService) {}
+    constructor(private logger: LoggerService) {}
 
-  buildErrorResponse(exception: InterceptedError, request: Request): ErrorResponse {
-    const errorResponse: ErrorResponse = {
-      requestId: request['id'] as string,
-      path: request.url,
-      message: exception.message,
-    };
+    buildErrorResponse(exception: InterceptedError, request: Request): ErrorResponse {
+        const errorResponse: ErrorResponse = {
+            requestId: request['id'] as string,
+            path: request.url,
+            message: exception.message,
+        };
 
-    if (exception instanceof ValidationFailedException) {
-      errorResponse.validationErrors = exception.validationErrors;
+        if (exception instanceof ValidationFailedException) {
+            errorResponse.validationErrors = exception.validationErrors;
+        }
+
+        return errorResponse;
     }
 
-    return errorResponse;
-  }
-
-  determineStatus(exception: InterceptedError): number {
-    if (exception instanceof HttpException) {
-      return exception.getStatus();
-    } else {
-      return HttpStatus.INTERNAL_SERVER_ERROR;
+    determineStatus(exception: InterceptedError): number {
+        if (exception instanceof HttpException) {
+            return exception.getStatus();
+        } else {
+            return HttpStatus.INTERNAL_SERVER_ERROR;
+        }
     }
-  }
 }

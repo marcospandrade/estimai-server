@@ -15,6 +15,6 @@ import { IUser } from '@modules/auth/entities/user.entity';
  * }
  */
 export const CurrentUser = createParamDecorator<unknown, ExecutionContext, IUser>((data, ctx) => {
-  const request = ctx.switchToHttp().getRequest<RequestWithUser>();
-  return request.user;
+    const request = ctx.switchToHttp().getRequest<RequestWithUser>();
+    return request.user;
 });

@@ -4,9 +4,9 @@ import { Reflector } from '@nestjs/core';
 import { FormatResponseFactory } from './format-response.factory';
 
 export const FormatResponseFactoryProvider: Provider = {
-  provide: FormatResponseFactory,
-  useFactory: (logger: LoggerService, reflector: Reflector) => {
-    return new FormatResponseFactory(logger, reflector);
-  },
-  inject: [LoggerService, Reflector],
+    provide: FormatResponseFactory,
+    useFactory: (logger: LoggerService, reflector: Reflector) => {
+        return new FormatResponseFactory(logger, reflector);
+    },
+    inject: [LoggerService, Reflector],
 };

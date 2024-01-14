@@ -1,11 +1,11 @@
 import { IsString } from 'class-validator';
 
 export class AuthConfig {
-  @IsString()
-  JWT_KEY: string;
+    @IsString()
+    JWT_KEY: string;
 
-  @IsString()
-  JWT_EXPIRES: string;
+    @IsString()
+    JWT_EXPIRES: string;
 }
 
 // export class OrmConfig {

@@ -13,7 +13,7 @@ import { IsNotEmpty, IsNumber } from 'class-validator';
  *  };
  */
 export class BaseCustomConfig {
-  @IsNotEmpty()
-  @IsNumber()
-  serverStartTime!: number;
+    @IsNotEmpty()
+    @IsNumber()
+    serverStartTime!: number;
 }

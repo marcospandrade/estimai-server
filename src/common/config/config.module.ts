@@ -30,39 +30,39 @@ import { AtlassianConfig } from './sources/atlassian.config';
  * {@link SqsModule} - Used to subscribe to user updates to invalidate stored user
  */
 export class BaseAppConfig extends IntersectionType(
-  BaseEnvConfig,
-  BaseCustomConfig,
-  BaseLoggerConfig,
-  AtlassianConfig,
+    BaseEnvConfig,
+    BaseCustomConfig,
+    BaseLoggerConfig,
+    AtlassianConfig,
 ) {}
 
 interface ConfigOptions {
-  /**
-   *  A general purpose function allowing any additional configuration to be added that isn't
-   *  possible through the other available ConfigOptions helpers.
-   *  The return type of your customLoad should be added to the AppConfig interface
-   *
-   * @example
-   *  export class ExampleAppConfig extends IntersectionType(
-   *      BaseAppConfig,
-   *      ExampleCustomConfig, // <-- this is the return type of customLoad
-   *  ) {}
-   */
-  customLoad?: () => MaybePromise<Record<string, unknown>>;
+    /**
+     *  A general purpose function allowing any additional configuration to be added that isn't
+     *  possible through the other available ConfigOptions helpers.
+     *  The return type of your customLoad should be added to the AppConfig interface
+     *
+     * @example
+     *  export class ExampleAppConfig extends IntersectionType(
+     *      BaseAppConfig,
+     *      ExampleCustomConfig, // <-- this is the return type of customLoad
+     *  ) {}
+     */
+    customLoad?: () => MaybePromise<Record<string, unknown>>;
 
-  /**
-   * The full interface of config values that you wish to use for configService.get()
-   * ConfigModule will perform runtime checks to ensure that it is hydrated correctly.
-   *
-   * @example
-   *  export class ExampleAppConfig extends IntersectionType(
-   *      BaseAppConfig,
-   *      BasePrismaConfig,
-   *  ) { someAppVar: string }
-   *  ...
-   *  ConfigModule.registerAsync({ AppConfig: ExampleAppConfig }),
-   */
-  AppConfig: typeof BaseAppConfig;
+    /**
+     * The full interface of config values that you wish to use for configService.get()
+     * ConfigModule will perform runtime checks to ensure that it is hydrated correctly.
+     *
+     * @example
+     *  export class ExampleAppConfig extends IntersectionType(
+     *      BaseAppConfig,
+     *      BasePrismaConfig,
+     *  ) { someAppVar: string }
+     *  ...
+     *  ConfigModule.registerAsync({ AppConfig: ExampleAppConfig }),
+     */
+    AppConfig: typeof BaseAppConfig;
 }
 
 /**
@@ -84,43 +84,43 @@ interface ConfigOptions {
  */
 @Module({})
 export class ConfigModule {
-  static async registerAsync(options: ConfigOptions): Promise<DynamicModule> {
-    const { customLoad, AppConfig } = options;
+    static async registerAsync(options: ConfigOptions): Promise<DynamicModule> {
+        const { customLoad, AppConfig } = options;
 
-    async function getCustomConfig() {
-      const config = await customLoad?.();
-      const baseConfig: BaseCustomConfig = {
-        serverStartTime: Date.now(),
-      };
-      return {
-        ...baseConfig,
-        ...config,
-      };
+        async function getCustomConfig() {
+            const config = await customLoad?.();
+            const baseConfig: BaseCustomConfig = {
+                serverStartTime: Date.now(),
+            };
+            return {
+                ...baseConfig,
+                ...config,
+            };
+        }
+        // Resolve any custom load function
+        const customConfig = await getCustomConfig();
+
+        const validate = (config: Record<string, unknown>) => {
+            return ObjValidator.forCustom(AppConfig, {
+                // this validated that customConfig adheres to the AppConfig interface
+                ...customConfig,
+                ...config,
+            });
+        };
+
+        return {
+            global: true,
+            module: ConfigModule,
+            imports: [
+                NestConfigModule.forRoot({
+                    validate: validate,
+                    isGlobal: true,
+                    // this actually adds the customConfig to the configService
+                    load: [() => customConfig],
+                }),
+            ],
+            providers: [ConfigService],
+            exports: [ConfigService],
+        };
     }
-    // Resolve any custom load function
-    const customConfig = await getCustomConfig();
-
-    const validate = (config: Record<string, unknown>) => {
-      return ObjValidator.forCustom(AppConfig, {
-        // this validated that customConfig adheres to the AppConfig interface
-        ...customConfig,
-        ...config,
-      });
-    };
-
-    return {
-      global: true,
-      module: ConfigModule,
-      imports: [
-        NestConfigModule.forRoot({
-          validate: validate,
-          isGlobal: true,
-          // this actually adds the customConfig to the configService
-          load: [() => customConfig],
-        }),
-      ],
-      providers: [ConfigService],
-      exports: [ConfigService],
-    };
-  }
 }
