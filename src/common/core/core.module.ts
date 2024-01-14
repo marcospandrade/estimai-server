@@ -4,7 +4,8 @@ import { LoggerService } from '../logger/logger.service';
 import { TerminusModule } from '@nestjs/terminus';
 import { CoreService } from './core.service';
 import { APP_FILTER } from '@nestjs/core';
-import { UnhandledExceptionFilter } from './exception-filters/unhandled-exception.filter';
+import { UnhandledExceptionFilter } from './exception-filters/unhandled-exception/unhandled-exception.filter';
+import { UnhandledExceptionFactory } from './exception-filters/unhandled-exception/unhandled-exception.factory';
 
 @Module({})
 export class CoreModule {
@@ -18,9 +19,10 @@ export class CoreModule {
         CoreService,
         {
           provide: APP_FILTER,
-          useFactory: (loggerService: LoggerService) => {
+          useFactory: (loggerService: LoggerService, factory: UnhandledExceptionFactory) => {
             loggerService.info('Registering global exception filter');
-            return new UnhandledExceptionFilter(loggerService);
+
+            return new UnhandledExceptionFilter(loggerService, factory);
           },
           inject: [LoggerService],
         },
