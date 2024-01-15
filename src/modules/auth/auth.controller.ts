@@ -3,14 +3,12 @@ import { Controller, Post, Body, UseGuards, Get, Request, HttpCode, HttpStatus, 
 import { IAuth } from './dto/login.dto';
 import { AuthUseCase } from './use-cases/auth.use-cases';
 import { RequestUser } from 'src/shared/helpers/generic.helpers';
-import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { CurrentUser } from '@common/current-user/current-user.decorator';
 
 import { UserAtlassianInfo } from '@common/atlassian/interfaces/user-info.model';
-import { FormatResponseInterceptor } from '@shared/interceptors/format-response/format-response.interceptor';
+import { JwtAuthGuard } from './strategies/jwt-bearer/jwt-auth.guard';
 
 @Controller('auth')
-@UseInterceptors(FormatResponseInterceptor)
 export class AuthController {
     constructor(private readonly authUseCase: AuthUseCase) {}
 
@@ -20,13 +18,13 @@ export class AuthController {
         return this.authUseCase.login(body);
     }
 
-    @UseGuards(AuthGuard)
+    @UseGuards(JwtAuthGuard)
     @Get('profile')
     getProfile(@Request() req: RequestUser) {
         return req.user;
     }
 
-    @UseGuards(AuthGuard)
+    @UseGuards(JwtAuthGuard)
     @Post('/refresh-token')
     refreshToken(@CurrentUser() user: UserAtlassianInfo) {
         return this.authUseCase.refreshToken(user.email);

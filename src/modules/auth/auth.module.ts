@@ -9,6 +9,7 @@ import { PrismaModule } from 'src/shared/prisma/prisma.module';
 import { AuthUseCase } from './use-cases/auth.use-cases';
 import { AtlassianModule } from 'src/common/atlassian/atlassian.module';
 import { EstimAiConfig } from 'src/app.module';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
     imports: [
@@ -21,7 +22,6 @@ import { EstimAiConfig } from 'src/app.module';
                 const expiresIn = configService.get('JWT_EXPIRES');
 
                 return {
-                    global: true,
                     secret,
                     signOptions: {
                         expiresIn,
@@ -30,9 +30,17 @@ import { EstimAiConfig } from 'src/app.module';
             },
             inject: [ConfigService],
         }),
+        PassportModule.registerAsync({
+            useFactory: () => {
+                return {
+                    defaultStrategy: 'jwt',
+                    property: 'user',
+                };
+            },
+        }),
     ],
     controllers: [AuthController],
     providers: [AuthUseCase, AuthFactoryService, JwtService, ConfigService],
-    exports: [AuthUseCase, AuthFactoryService, JwtService],
+    exports: [AuthUseCase, JwtService],
 })
 export class AuthModule {}

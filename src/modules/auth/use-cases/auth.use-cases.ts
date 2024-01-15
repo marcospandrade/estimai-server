@@ -30,7 +30,7 @@ export class AuthUseCase {
         const userExists = await this.authFactoryService.checkUserExists(userInfo.email);
 
         if (userExists) {
-            return mountGenericResponse(userExists, 'Success login');
+            return userExists;
         }
 
         const accessibleResources = await this.atlassianService.getAccessibleResources(exchangedCode.access_token);
@@ -58,7 +58,7 @@ export class AuthUseCase {
 
         const userCreated = await this.authFactoryService.createUser(createUser);
 
-        return mountGenericResponse(userCreated, 'Success login');
+        return userCreated;
     }
 
     public async refreshToken(userEmail: string) {
@@ -70,6 +70,6 @@ export class AuthUseCase {
 
         const refreshedToken = await this.atlassianService.refreshToken(userEmail, user.refreshToken);
 
-        return mountGenericResponse(refreshedToken, 'Token refreshed with successfuly');
+        return refreshedToken;
     }
 }

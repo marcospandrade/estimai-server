@@ -2,8 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { CreateSprintDto } from './dto/create-sprint.dto';
 import { UpdateSprintDto } from './dto/update-sprint.dto';
 import { CurrentUser } from '@common/current-user/current-user.decorator';
-import { User } from '../auth/entities/auth.entity';
 import { SprintUseCases } from './use-cases/sprint.use-cases';
+import { IUser } from '@modules/auth/entities/user.entity';
 
 @Controller('sprint')
 export class SprintController {
@@ -15,13 +15,14 @@ export class SprintController {
     }
 
     @Get('/test')
-    testSprint(@CurrentUser() user: User) {
-        console.log('Sprint', user);
+    testSprint(@CurrentUser() user: IUser) {
+        console.log('result controller', user);
         return this.sprintUseCases.findAll(user.email);
     }
 
     @Get()
-    findAll(@CurrentUser() user: User) {
+    findAll(@CurrentUser() user: IUser) {
+        console.log('result controller', user);
         return this.sprintUseCases.findAll(user.email);
     }
 
