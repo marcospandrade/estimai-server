@@ -1,3 +1,7 @@
+import helmet, { HelmetOptions } from 'helmet';
+// import hpp from 'hpp';
+import { Logger } from 'nestjs-pino';
+
 import { Injectable } from '@nestjs/common';
 import {
     GlobalPrefixOptions,
@@ -8,15 +12,13 @@ import {
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
-import helmet, { HelmetOptions } from 'helmet';
-import hpp from 'hpp';
-import { Logger } from 'nestjs-pino';
+import { HealthIndicatorResult } from '@nestjs/terminus';
+export { HealthIndicator, HealthIndicatorResult, HealthCheckError } from '@nestjs/terminus';
+
 import { ObjValidator } from '../config/obj-validator';
 import { BaseEnvConfig } from '../config/sources/env.config';
 
 import { MaybePromise } from '../utils';
-import { HealthIndicatorResult } from '@nestjs/terminus';
-export { HealthIndicator, HealthCheckError } from '@nestjs/terminus';
 
 export interface HealthIndicatorInterface {
     isHealthy(key?: string): Promise<HealthIndicatorResult>;
@@ -120,7 +122,8 @@ export class CoreService {
         app.use(helmet(options.helmetOptions));
 
         // Apply hpp middleware
-        app.use(hpp());
+        //TODO - Investigate that hpp package
+        // app.use(hpp());
 
         // Set up global prefix
         if (options.globalPrefix) {
