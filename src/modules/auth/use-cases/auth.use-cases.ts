@@ -6,7 +6,6 @@ import { IAuth, ICreateUserDTO } from '../dto/login.dto';
 import { AuthFactoryService } from './auth-factory.service';
 import { AtlassianService } from '../../../common/atlassian/atlassian.service';
 import { AtlassianHelper } from '../../../common/atlassian/helpers/atlassian.helper';
-import { mountGenericResponse } from '@shared/helpers/req-res.helpers';
 
 @Injectable()
 export class AuthUseCase {

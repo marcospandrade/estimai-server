@@ -9,7 +9,7 @@ import { AuthConfig } from './config';
 import { AuthModule } from './modules/auth/auth.module';
 import { SprintModule } from './modules/sprint/sprint.module';
 import { IssuesModule } from './modules/issues/issues.module';
-import { SetUserMiddleware } from './shared/middlewares/set-user.middleware';
+import { SetUserMiddleware } from './common/core/middlewares/set-user.middleware';
 
 export class EstimAiConfig extends IntersectionType(BaseAppConfig, AuthConfig) {}
 
