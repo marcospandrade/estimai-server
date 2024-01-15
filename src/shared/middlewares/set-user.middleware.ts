@@ -1,24 +1,31 @@
-import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
+import { Injectable, NestMiddleware } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
 import { Response, NextFunction, Request } from 'express';
 
+import { AuthConfig } from 'src/config';
+import { LoggerService } from '@common/logger/logger.service';
+
 @Injectable()
 export class SetUserMiddleware implements NestMiddleware {
-    private readonly log = new Logger(SetUserMiddleware.name);
-    private readonly jwtService = new JwtService();
+    public constructor(
+        private readonly configService: ConfigService<AuthConfig>,
+        private readonly loggerService: LoggerService,
+        private readonly jwtService: JwtService,
+    ) {}
 
-    async use(req: Request, res: Response, next: NextFunction) {
+    public async use(req: Request, res: Response, next: NextFunction) {
         const token = req.headers.cookie?.split('=')[1];
 
         if (!token) {
-            this.log.error('Unauthorized tentative.');
+            this.loggerService.error('Unauthorized tentative.');
             return res.status(401).send({ message: 'Unauthorized.' });
         }
 
         try {
             const decoded = this.jwtService.verify(token, {
-                secret: process.env.JWT_KEY,
+                secret: this.configService.get('JWT_KEY'),
             });
             req.user = decoded;
             next();
