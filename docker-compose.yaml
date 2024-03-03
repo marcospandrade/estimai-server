@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+    api:
+        image: estimai-dev
+        build:
+            context: .
+            dockerfile: Dockerfile
+        # command: npm start
+        container_name: ${API_CONTAINER_NAME}
+        hostname: ${API_CONTAINER_NAME}
+        volumes:
+            - ./:/usr/src/app
+            - node_modules:/usr/src/app/node_modules
+        ports:
+            - $APP_PORT:$APP_PORT
+            - 9229:9229
+        networks:
+            - api
+        env_file:
+            - .env
+        depends_on:
+            - postgres
+        environment:
+            - PORT=${APP_PORT}
+        tty: true
+        init: true
+
+    postgres:
+        image: postgres
+        restart: always
+        container_name: ${DB_CONTAINER_NAME}
+        hostname: ${DB_CONTAINER_NAME}
+        environment:
+            PGDATABASE: $DB_NAME
+            PGUSER: $DB_USER
+            PGPASSWORD: $DB_PASSWORD
+            PGPORT: $DB_PORT
+            POSTGRES_PASSWORD: $DB_PASSWORD
+            POSTGRES_USER: $DB_USER
+            POSTGRES_DB: $DB_NAME
+        ports:
+            - $DB_PORT:$DB_PORT
+        volumes:
+            - postgres:/var/folders/postgres:/data/postgres
+            - postgres_data:/var/lib/postgresql/data
+        networks:
+            - api
+        env_file:
+            - .env
+
+volumes:
+    node_modules:
+    postgres:
+    postgres_data:
+
+networks:
+    api:
+        name: estimai_api
+        driver: bridge
