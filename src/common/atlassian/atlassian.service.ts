@@ -12,7 +12,7 @@ import {
 } from '../interfaces/config-atlassian.model';
 
 import { UserAtlassianInfo } from './interfaces/user-info.model';
-import { PrismaService } from 'src/shared/prisma/prisma.service';
+import { PrismaService } from 'src/lib/prisma/prisma.service';
 import { IAccessibleResources } from './interfaces/accessible-resources';
 import { EstimAiConfig } from 'src/app.module';
 

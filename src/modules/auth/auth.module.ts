@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 
 import { AuthFactoryService } from './use-cases/auth-factory.service';
 import { AuthController } from './auth.controller';
-import { PrismaModule } from 'src/shared/prisma/prisma.module';
+import { PrismaModule } from 'src/lib/prisma/prisma.module';
 import { AuthUseCase } from './use-cases/auth.use-cases';
 import { AtlassianModule } from 'src/common/atlassian/atlassian.module';
 import { EstimAiConfig } from 'src/app.module';

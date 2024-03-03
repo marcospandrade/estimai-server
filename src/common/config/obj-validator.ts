@@ -32,7 +32,7 @@ export class ObjValidator {
         });
 
         if (errors.length > 0) {
-            const constraintMsgs = errors.map((e) => JSON.stringify(e.constraints)).join('\n');
+            const constraintMsgs = errors.map(e => JSON.stringify(e.constraints)).join('\n');
             throw new Error(`Validation failed! Fix the following errors:\n\n${constraintMsgs}\n\n`);
         }
 

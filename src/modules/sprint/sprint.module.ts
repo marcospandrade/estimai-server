@@ -5,7 +5,7 @@ import { SprintController } from './sprint.controller';
 import { AtlassianModule } from 'src/common/atlassian/atlassian.module';
 import { AuthUseCase } from '../auth/use-cases/auth.use-cases';
 import { AuthFactoryService } from '../auth/use-cases/auth-factory.service';
-import { PrismaModule } from 'src/shared/prisma/prisma.module';
+import { PrismaModule } from 'src/lib/prisma/prisma.module';
 import { AuthModule } from '@modules/auth/auth.module';
 import { JwtService } from '@nestjs/jwt';
 

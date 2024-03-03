@@ -32,4 +32,6 @@ model User {
 model Tasks {
   id      String @id @default(uuid())
   issueId String
+
+  @@map("tasks")
 }
