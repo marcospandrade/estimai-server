@@ -1,6 +1,27 @@
 version: '3.8'
 
 services:
+    postgres-db:
+        image: postgres
+        restart: always
+        container_name: ${DB_CONTAINER_NAME}
+        hostname: ${DB_CONTAINER_NAME}
+        environment:
+            PGDATABASE: $DB_NAME
+            PGUSER: $DB_USER
+            PGPASSWORD: $DB_PASSWORD
+            PGPORT: $DB_PORT
+            POSTGRES_PASSWORD: $DB_PASSWORD
+            POSTGRES_USER: $DB_USER
+            POSTGRES_DB: $DB_NAME
+        ports:
+            - $DB_PORT:$DB_PORT
+        volumes:
+            - postgres:/var/folders/postgres:/data/postgres
+            - postgres_data:/var/lib/postgresql/data
+        networks:
+            - api
+
     api:
         image: estimai-dev
         build:
@@ -23,27 +44,6 @@ services:
             - .env
         tty: true
         init: true
-
-    postgres:
-        image: postgres
-        restart: always
-        container_name: ${DB_CONTAINER_NAME}
-        hostname: ${DB_CONTAINER_NAME}
-        environment:
-            PGDATABASE: $DB_NAME
-            PGUSER: $DB_USER
-            PGPASSWORD: $DB_PASSWORD
-            PGPORT: $DB_PORT
-            POSTGRES_PASSWORD: $DB_PASSWORD
-            POSTGRES_USER: $DB_USER
-            POSTGRES_DB: $DB_NAME
-        ports:
-            - $DB_PORT:$DB_PORT
-        volumes:
-            - postgres:/var/folders/postgres:/data/postgres
-            - postgres_data:/var/lib/postgresql/data
-        networks:
-            - api
 
 volumes:
     node_modules:

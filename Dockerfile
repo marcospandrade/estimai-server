@@ -27,9 +27,11 @@ WORKDIR /usr/src/app
 ENV NODE_ENV production
 
 COPY --chown=node:node package*.json ./
+COPY --chown=node:node prisma ./prisma/
 COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node . .
 
+# This line generates the Prisma client code based on the schema defined in the application.
 RUN npx prisma generate
 
 RUN npm run build
@@ -45,7 +47,7 @@ FROM build AS production
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/.env .env
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
-COPY --chown=node:node --from=build /usr/src/app/prisma ./prisma
+# COPY --chown=node:node --from=build /usr/src/app/prisma ./prisma
 
 RUN npm ci --omit=dev && npm cache clean --force
 
