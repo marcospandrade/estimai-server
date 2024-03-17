@@ -44,6 +44,8 @@ services:
             - .env
         tty: true
         init: true
+        depends_on:
+            - postgres-db
 
 volumes:
     node_modules:

@@ -20,7 +20,7 @@ COPY --chown=node:node . .
 USER node
 
 ### BUILD ###
-FROM node:18.16.0 AS build
+FROM development AS build
 
 WORKDIR /usr/src/app
 

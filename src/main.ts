@@ -28,7 +28,7 @@ CoreService.bootstrap({
     middlewares: [helmet.referrerPolicy({ policy: 'strict-origin-when-cross-origin' })],
     swaggerOptions: {
         path: 'api/docs',
-        configureDocumentBuilder: (documentBuilder) => {
+        configureDocumentBuilder: documentBuilder => {
             return documentBuilder
                 .setTitle('API Documentation')
                 .setDescription('EstimAI API')
