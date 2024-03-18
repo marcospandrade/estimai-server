@@ -17,7 +17,7 @@ export class CoreController {
     @Get('health-check')
     @HealthCheck()
     check() {
-        const healthCheckItems = CoreService.customHealthIndicators.map((indicatorClass) => {
+        const healthCheckItems = CoreService.customHealthIndicators.map(indicatorClass => {
             return () => {
                 const indicator: HealthIndicatorInterface = this.moduleRef.get(indicatorClass, {
                     strict: false,

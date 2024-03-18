@@ -2,8 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
-  engineType = "binary"
+  provider      = "prisma-client-js"
+  engineType    = "binary"
   binaryTargets = ["linux-arm64-openssl-3.0.x", "darwin-arm64"]
 }
 
@@ -13,27 +13,94 @@ datasource db {
 }
 
 model User {
-  id                   String   @id @default(uuid())
-  accessTokenEstimai   String   @unique @map("access_token_estimai")
-  accessTokenAtlassian String   @unique @map("access_token_atlassian")
-  expiresAt            String   @map("expires_at")
-  refreshToken         String   @unique @map("refresh_token")
-  state                String   @unique
+  id                   String  @id @default(uuid())
+  accessTokenEstimai   String  @unique @map("access_token_estimai")
+  accessTokenAtlassian String  @unique @map("access_token_atlassian")
+  expiresAt            String  @map("expires_at")
+  refreshToken         String  @unique @map("refresh_token")
+  state                String  @unique
   name                 String
-  email                String   @unique
+  email                String  @unique
   picture              String?
-  jobTitle             String?  @map("job_title")
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
-  urlAuthenticated     String   @map("url_authenticated")
-  cloudId              String   @map("cloud_id")
+  jobTitle             String? @map("job_title")
+  urlAuthenticated     String  @map("url_authenticated")
+  cloudId              String  @map("cloud_id")
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sprints Sprint[]
+
+  @@index([state, email])
   @@map("users")
 }
 
-model Tasks {
-  id      String @id @default(uuid())
-  issueId String
+model Sprint {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  startDate DateTime
+  endDate   DateTime
+  goals     String
+  tasks     Task[]
 
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String?
+  Team   Team?   @relation(fields: [teamId], references: [id])
+  teamId String?
+
+  @@map("sprints")
+}
+
+model Task {
+  id          String  @id @default(uuid())
+  issueId     String  @unique
+  description String?
+  issueKey    String
+
+  sprint   Sprint? @relation(fields: [sprintId], references: [id])
+  sprintId String?
+
+  @@index([issueId])
   @@map("tasks")
+}
+
+model Team {
+  id           String            @id @default(uuid())
+  teamName     String
+  sprints      Sprint[]
+  participants TeamParticipant[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("teams")
+}
+
+model Participant {
+  id       String            @id @default(uuid())
+  name     String
+  capacity String?
+  role     String?
+  isActive Boolean           @default(true)
+  team     TeamParticipant[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("participants")
+}
+
+model TeamParticipant {
+  teamId        String
+  participantId String
+  assignedAt    DateTime @default(now())
+
+  team        Team        @relation(fields: [teamId], references: [id])
+  participant Participant @relation(fields: [participantId], references: [id])
+
+  @@unique([teamId, participantId])
+  @@index([teamId, participantId])
+  @@map("team_participats")
 }

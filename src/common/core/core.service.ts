@@ -121,6 +121,10 @@ export class CoreService {
         // Apply helmet middleware
         app.use(helmet(options.helmetOptions));
 
+        app.enableCors({
+            origin: ['localhost:3001'],
+        });
+
         // Apply hpp middleware
         //TODO - Investigate that hpp package
         // app.use(hpp());

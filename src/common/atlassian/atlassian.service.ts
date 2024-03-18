@@ -113,7 +113,7 @@ export class AtlassianService {
 
     public async genericAtlassianCall(url: string, userEmail: string) {
         const accessToken = await this.getToken(userEmail);
-        const authHeader = `Basic ${Buffer.from(userEmail + ':' + accessToken).toString('base64')}`;
+        // const authHeader = `Basic ${Buffer.from(userEmail + ':' + accessToken).toString('base64')}`;
 
         const { data } = await firstValueFrom(
             this.httpService
@@ -121,9 +121,6 @@ export class AtlassianService {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
-                    // headers: {
-                    //   Authorization: authHeader,
-                    // },
                 })
                 .pipe(
                     catchError((error: AxiosError) => {
